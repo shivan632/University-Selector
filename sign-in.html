@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication System</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #224abe;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .auth-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            width: 100%;
+            max-width: 900px;
+        }
+        
+        .auth-left {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .auth-right {
+            padding: 40px;
+        }
+        
+        .auth-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .auth-switcher {
+            display: flex;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: var(--light-color);
+        }
+        
+        .auth-switcher button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .auth-switcher button.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-group label {
+            position: absolute;
+            top: 12px;
+            left: 15px;
+            color: var(--dark-color);
+            transition: all 0.3s;
+            pointer-events: none;
+            background: white;
+            padding: 0 5px;
+        }
+        
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label {
+            top: -10px;
+            left: 10px;
+            font-size: 12px;
+            color: var(--primary-color);
+        }
+        
+        .form-control {
+            padding: 15px;
+            height: 50px;
+            border-radius: 8px;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .btn-auth {
+            background: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .btn-auth:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 12px 15px;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            cursor: pointer;
+            color: var(--dark-color);
+        }
+        
+        .debug-panel {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .auth-left {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="row g-0">
+            <div class="col-md-5">
+                <div class="auth-left">
+                    <i class="fas fa-lock auth-icon"></i>
+                    <h2>Welcome to Our Platform</h2>
+                    <p>Sign in to access your account or create a new one to get started with our services.</p>
+                </div>
+            </div>
+            <div class="col-md-7">
+                <div class="auth-right">
+                    <div class="auth-switcher">
+                        <button id="loginBtn" class="active">Sign In</button>
+                        <button id="registerBtn">Sign Up</button>
+                    </div>
+                    
+                    <div id="loginForm">
+                        <h3 class="mb-4">Sign In to Your Account</h3>
+                        <div id="loginAlert"></div>
+                        
+                        <form id="loginFormElement">
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="loginEmail" placeholder=" " required>
+                                <label for="loginEmail">Email Address</label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="loginPassword" placeholder=" " required>
+                                <label for="loginPassword">Password</label>
+                                <i class="fas fa-eye password-toggle" id="loginPasswordToggle"></i>
+                            </div>
+                            
+                            <div class="form-group form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember me</label>
+                            </div>
+                            
+                            <button type="submit" class="btn-auth mb-3">Sign In</button>
+                            
+                            <div class="text-center">
+                                <a href="#" class="text-decoration-none">Forgot your password?</a>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div id="registerForm" style="display: none;">
+                        <h3 class="mb-4">Create Your Account</h3>
+                        <div id="registerAlert"></div>
+                        
+                        <form id="registerFormElement">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="firstName" placeholder=" " required>
+                                        <label for="firstName">First Name</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="lastName" placeholder=" " required>
+                                        <label for="lastName">Last Name</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="registerEmail" placeholder=" " required>
+                                <label for="registerEmail">Email Address</label>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="registerPassword" placeholder=" " required minlength="6">
+                                <label for="registerPassword">Password (min. 6 characters)</label>
+                                <i class="fas fa-eye password-toggle" id="registerPasswordToggle"></i>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder=" " required>
+                                <label for="confirmPassword">Confirm Password</label>
+                            </div>
+                            
+                            <div class="form-group form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="termsAgree" required>
+                                <label class="form-check-label" for="termsAgree">I agree to the <a href="#" class="text-decoration-none">Terms and Conditions</a></label>
+                            </div>
+                            
+                            <button type="submit" class="btn-auth">Create Account</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Debug Panel -->
+                    <div class="debug-panel mt-4" id="debugPanel" style="display: none;">
+                        <h6>Debug Information</h6>
+                        <div id="debugContent"></div>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <button class="btn btn-sm btn-outline-secondary" id="toggleDebug">Show Debug</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // DOM Elements
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginFormElement = document.getElementById('loginFormElement');
+        const registerFormElement = document.getElementById('registerFormElement');
+        const loginAlert = document.getElementById('loginAlert');
+        const registerAlert = document.getElementById('registerAlert');
+        const loginPasswordToggle = document.getElementById('loginPasswordToggle');
+        const registerPasswordToggle = document.getElementById('registerPasswordToggle');
+        const debugPanel = document.getElementById('debugPanel');
+        const debugContent = document.getElementById('debugContent');
+        const toggleDebug = document.getElementById('toggleDebug');
+        
+        // API Base URL
+        const API_BASE_URL = 'http://localhost:5000';
+        
+        // Switch between login and register forms
+        loginBtn.addEventListener('click', () => {
+            loginBtn.classList.add('active');
+            registerBtn.classList.remove('active');
+            loginForm.style.display = 'block';
+            registerForm.style.display = 'none';
+            clearAlerts();
+        });
+        
+        registerBtn.addEventListener('click', () => {
+            registerBtn.classList.add('active');
+            loginBtn.classList.remove('active');
+            registerForm.style.display = 'block';
+            loginForm.style.display = 'none';
+            clearAlerts();
+        });
+        
+        // Toggle debug panel
+        toggleDebug.addEventListener('click', () => {
+            if (debugPanel.style.display === 'none') {
+                debugPanel.style.display = 'block';
+                toggleDebug.textContent = 'Hide Debug';
+            } else {
+                debugPanel.style.display = 'none';
+                toggleDebug.textContent = 'Show Debug';
+            }
+        });
+        
+        // Toggle password visibility
+        loginPasswordToggle.addEventListener('click', () => {
+            togglePasswordVisibility('loginPassword', loginPasswordToggle);
+        });
+        
+        registerPasswordToggle.addEventListener('click', () => {
+            togglePasswordVisibility('registerPassword', registerPasswordToggle);
+        });
+        
+        function togglePasswordVisibility(inputId, toggleIcon) {
+            const passwordInput = document.getElementById(inputId);
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Handle login form submission
+        loginFormElement.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            try {
+                addDebugInfo(`Attempting login for: ${email}`);
+                
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                
+                const data = await response.json();
+                addDebugInfo(`Login response: ${JSON.stringify(data)}`);
+                
+                if (response.ok) {
+                    showAlert(loginAlert, 'Login successful! Redirecting...', 'success');
+                    // Save token to localStorage
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    // Redirect to dashboard or home page
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1500);
+                } else {
+                    showAlert(loginAlert, data.error || 'Invalid email or password', 'danger');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                addDebugInfo(`Login error: ${error.message}`);
+                showAlert(loginAlert, 'Login failed. Please try again later.', 'danger');
+            }
+        });
+        
+        // Handle register form submission
+        registerFormElement.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Basic validation
+            if (password !== confirmPassword) {
+                showAlert(registerAlert, 'Passwords do not match', 'danger');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showAlert(registerAlert, 'Password must be at least 6 characters', 'danger');
+                return;
+            }
+            
+            try {
+                addDebugInfo(`Attempting registration for: ${email}`);
+                addDebugInfo(`Data: ${firstName} ${lastName}, ${email}`);
+                
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        first_name: firstName, 
+                        last_name: lastName, 
+                        email, 
+                        password 
+                    })
+                });
+                
+                const data = await response.json();
+                addDebugInfo(`Registration response: ${JSON.stringify(data)}`);
+                
+                if (response.ok) {
+                    showAlert(registerAlert, 'Registration successful! You can now sign in.', 'success');
+                    // Clear form
+                    registerFormElement.reset();
+                    // Switch to login form after a delay
+                    setTimeout(() => {
+                        loginBtn.click();
+                    }, 2000);
+                } else {
+                    showAlert(registerAlert, data.error || 'Registration failed', 'danger');
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                addDebugInfo(`Registration error: ${error.message}`);
+                showAlert(registerAlert, 'Registration failed. Please try again later.', 'danger');
+                
+                // Test with a mock response if server is not responding
+                setTimeout(() => {
+                    showAlert(registerAlert, 'Server not responding. Check if backend is running on port 5000.', 'warning');
+                }, 2000);
+            }
+        });
+        
+        // Helper function to show alerts
+        function showAlert(container, message, type) {
+            container.innerHTML = `
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `;
+        }
+        
+        // Add debug information
+        function addDebugInfo(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            debugContent.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            debugContent.scrollTop = debugContent.scrollHeight;
+        }
+        
+        // Clear all alerts
+        function clearAlerts() {
+            loginAlert.innerHTML = '';
+            registerAlert.innerHTML = '';
+        }
+        
+        // Test backend connection on page load
+        async function testBackendConnection() {
+            try {
+                addDebugInfo('Testing connection to backend...');
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: 'test@test.com', password: 'test' })
+                });
+                
+                // We don't care about the response content, just if we can connect
+                addDebugInfo(`Backend connection: ${response.status} ${response.statusText}`);
+            } catch (error) {
+                addDebugInfo(`Backend connection failed: ${error.message}`);
+                addDebugInfo('Make sure your backend server is running on port 5000');
+            }
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            if (localStorage.getItem('authToken')) {
+                // Redirect to dashboard if already logged in
+                window.location.href = '/dashboard.html';
+            }
+            
+            // Test backend connection
+            testBackendConnection();
+        });
+    </script>
+</body>
+</html>

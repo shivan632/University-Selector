@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - UniSelector</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #224abe;
+            --accent-color: #6610f2;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fc;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        #sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            z-index: 100;
+            width: 250px;
+        }
+        
+        #sidebar.collapsed {
+            margin-left: -250px;
+        }
+        
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        #sidebar ul.components {
+            padding: 20px 0;
+        }
+        
+        #sidebar ul li a {
+            padding: 15px 20px;
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        #sidebar ul li a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        #sidebar ul li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        #sidebar ul li.active > a {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Main Content */
+        #content {
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            transition: all 0.3s;
+            margin-left: 250px;
+        }
+        
+        #content.collapsed {
+            width: 100%;
+            margin-left: 0;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .card-border-left-primary {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .card-border-left-success {
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .card-border-left-info {
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .card-border-left-warning {
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        /* User profile */
+        .user-profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.2);
+            border-radius: 10px;
+        }
+        
+        /* Dashboard stats */
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .stat-text {
+            font-size: 0.9rem;
+            color: #5a5c69;
+        }
+        
+        /* Charts and graphs */
+        .chart-container {
+            position: relative;
+            height: 250px;
+        }
+        
+        /* Activity feed */
+        .activity-item {
+            position: relative;
+            padding: 1rem 0;
+            border-left: 1px solid #e3e6f0;
+            margin-left: 1rem;
+        }
+        
+        .activity-item:last-child {
+            border-left: 1px solid transparent;
+        }
+        
+        .activity-badge {
+            position: absolute;
+            left: -0.5rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+        
+        /* University cards */
+        .university-card {
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s;
+            height: 100%;
+        }
+        
+        .university-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .university-img {
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        .match-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success-color);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        /* Progress bars */
+        .program-progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            #sidebar.collapsed {
+                margin-left: -100%;
+            }
+            
+            #content {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            #content.collapsed {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+        
+        /* UniSelector branding */
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo span {
+            color: #ffce47;
+        }
+        
+        .uni-gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .btn-uni {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-uni:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 p-0" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo">Uni<span>Selector</span></div>
+                    <p class="small mb-0">Your Personalized University Guide</p>
+                </div>
+                
+                <ul class="list-unstyled components">
+                    <li class="active">
+                        <a href="#">
+                            <i class="fas fa-home"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-university"></i>
+                            University Matches
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-clipboard-list"></i>
+                            Questionnaire
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-bookmark"></i>
+                            Saved Programs
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-user"></i>
+                            Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="px-3 py-4">
+                    <div class="card bg-dark text-white">
+                        <div class="card-body text-center">
+                            <h5><i class="fas fa-graduation-cap"></i> Premium</h5>
+                            <p class="small">Get detailed admission chances and personalized counseling</p>
+                            <button class="btn btn-sm btn-light">Upgrade Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-md-9 col-lg-10 p-0" id="content">
+                <!-- Navbar -->
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <div class="container-fluid">
+                        <button id="sidebarToggle" class="btn btn-primary">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown me-3">
+                                <a class="btn btn-light dropdown-toggle" href="#" role="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="badge bg-danger rounded-pill">3</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                                    <li><a class="dropdown-item" href="#">New university match found</a></li>
+                                    <li><a class="dropdown-item" href="#">Application deadline approaching</a></li>
+                                    <li><a class="dropdown-item" href="#">New scholarship available</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="https://ui-avatars.com/api/?name=User&background=4e73df&color=ffffff" class="user-profile-img me-2">
+                                    <span id="userName">User Name</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Main content -->
+                <div class="container-fluid px-4">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Welcome back, <span id="userFirstName">User</span>!</h1>
+                        <a href="#" class="btn-cta d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+                        </a>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-border-left-primary h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="stat-text text-primary">UNIVERSITY MATCHES</div>
+                                            <div class="stat-number">12</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-university fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-border-left-success h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="stat-text text-success">SAVED PROGRAMS</div>
+                                            <div class="stat-number">7</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-bookmark fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-border-left-info h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="stat-text text-info">QUESTIONNAIRE PROGRESS</div>
+                                            <div class="stat-number">85%</div>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar bg-info" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-border-left-warning h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="stat-text text-warning">UPCOMING DEADLINES</div>
+                                            <div class="stat-number">3</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top University Matches -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card mb-4">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Your Top University Matches</h6>
+                                    <a href="#" class="btn btn-sm btn-primary">View All</a>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-xl-3 col-md-6 mb-4">
+                                            <div class="card university-card">
+                                                <div class="university-img">
+                                                    <i class="fas fa-university"></i>
+                                                    <span class="match-badge">92% Match</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Stanford University</h5>
+                                                    <p class="card-text">Computer Science Program</p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="badge bg-success">High Admission Chance</span>
+                                                        <a href="#" class="btn btn-sm btn-outline-primary">Details</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3 col-md-6 mb-4">
+                                            <div class="card university-card">
+                                                <div class="university-img">
+                                                    <i class="fas fa-university"></i>
+                                                    <span class="match-badge">88% Match</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">MIT</h5>
+                                                    <p class="card-text">Engineering Program</p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="badge bg-warning">Medium Admission Chance</span>
+                                                        <a href="#" class="btn btn-sm btn-outline-primary">Details</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3 col-md-6 mb-4">
+                                            <div class="card university-card">
+                                                <div class="university-img">
+                                                    <i class="fas fa-university"></i>
+                                                    <span class="match-badge">85% Match</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">Harvard University</h5>
+                                                    <p class="card-text">Business Administration</p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="badge bg-warning">Medium Admission Chance</span>
+                                                        <a href="#" class="btn btn-sm btn-outline-primary">Details</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-3 col-md-6 mb-4">
+                                            <div class="card university-card">
+                                                <div class="university-img">
+                                                    <i class="fas fa-university"></i>
+                                                    <span class="match-badge">79% Match</span>
+                                                </div>
+                                                <div class="card-body">
+                                                    <h5 class="card-title">UC Berkeley</h5>
+                                                    <p class="card-text">Data Science Program</p>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <span class="badge bg-success">High Admission Chance</span>
+                                                        <a href="#" class="btn btn-sm btn-outline-primary">Details</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts and Activity Row -->
+                    <div class="row">
+                        <div class="col-xl-8 col-lg-7">
+                            <div class="card mb-4">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Admission Chance Overview</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="admissionChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-5">
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Recent Activity</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="activity-item">
+                                        <div class="activity-badge"></div>
+                                        <div class="activity-content">
+                                            <div class="d-flex justify-content-between">
+                                                <small>10:30 AM</small>
+                                                <small>Today</small>
+                                            </div>
+                                            <p>Added Stanford to your favorites</p>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-badge"></div>
+                                        <div class="activity-content">
+                                            <div class="d-flex justify-content-between">
+                                                <small>11:45 AM</small>
+                                                <small>Today</small>
+                                            </div>
+                                            <p>Completed "Academic Interests" section</p>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-badge"></div>
+                                        <div class="activity-content">
+                                            <div class="d-flex justify-content-between">
+                                                <small>1:30 PM</small>
+                                                <small>Today</small>
+                                            </div>
+                                            <p>Received 3 new university matches</p>
+                                        </div>
+                                    </div>
+                                    <div class="activity-item">
+                                        <div class="activity-badge"></div>
+                                        <div class="activity-content">
+                                            <div class="d-flex justify-content-between">
+                                                <small>3:20 PM</small>
+                                                <small>Today</small>
+                                            </div>
+                                            <p>Updated your profile information</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Steps -->
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Your Next Steps</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-clipboard-list fa-2x text-primary mb-3"></i>
+                                                    <h5>Complete Questionnaire</h5>
+                                                    <p>Finish your profile for better matches</p>
+                                                    <div class="progress mb-3 program-progress">
+                                                        <div class="progress-bar" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+                                                    <a href="#" class="btn btn-sm btn-primary">Continue</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-bookmark fa-2x text-primary mb-3"></i>
+                                                    <h5>Save Programs</h5>
+                                                    <p>Bookmark your favorite programs</p>
+                                                    <a href="#" class="btn btn-sm btn-primary">View Matches</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-tasks fa-2x text-primary mb-3"></i>
+                                                    <h5>Application Plan</h5>
+                                                    <p>Track your application progress</p>
+                                                    <a href="#" class="btn btn-sm btn-primary">Get Started</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card bg-light">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-calendar-day fa-2x text-primary mb-3"></i>
+                                                    <h5>Deadlines</h5>
+                                                    <p>View upcoming application deadlines</p>
+                                                    <a href="#" class="btn btn-sm btn-primary">Check Dates</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white mt-5">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; UniSelector 2023</span>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // DOM Elements
+        const userNameElement = document.getElementById('userName');
+        const userFirstNameElement = document.getElementById('userFirstName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+
+        // Check if user is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const authToken = localStorage.getItem('authToken');
+            const userData = localStorage.getItem('user');
+            
+            if (!authToken) {
+                // Redirect to login if not authenticated
+                window.location.href = 'sign-in.html';
+                return;
+            }
+            
+            // Display user data if available
+            if (userData) {
+                const user = JSON.parse(userData);
+                userNameElement.textContent = `${user.first_name} ${user.last_name}`;
+                userFirstNameElement.textContent = user.first_name;
+                
+                // Update avatar with user's initials
+                const avatar = document.querySelector('.user-profile-img');
+                if (avatar) {
+                    avatar.src = `https://ui-avatars.com/api/?name=${user.first_name}+${user.last_name}&background=4e73df&color=ffffff`;
+                }
+            }
+            
+            // Initialize charts
+            initCharts();
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Clear authentication data
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('user');
+            
+            // Redirect to login page
+            window.location.href = 'sign-in.html';
+        });
+
+        // Sidebar toggle for mobile
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+            
+            // Change icon based on state
+            const icon = sidebarToggle.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // Initialize charts
+        function initCharts() {
+            // Admission Chance Chart
+            const admissionCtx = document.getElementById('admissionChart').getContext('2d');
+            const admissionChart = new Chart(admissionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Stanford', 'MIT', 'Harvard', 'UC Berkeley', 'Yale', 'Princeton'],
+                    datasets: [{
+                        label: 'Admission Chance (%)',
+                        data: [92, 88, 85, 79, 75, 70],
+                        backgroundColor: [
+                            'rgba(78, 115, 223, 0.7)',
+                            'rgba(78, 115, 223, 0.7)',
+                            'rgba(78, 115, 223, 0.7)',
+                            'rgba(78, 115, 223, 0.7)',
+                            'rgba(78, 115, 223, 0.7)',
+                            'rgba(78, 115, 223, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(78, 115, 223, 1)',
+                            'rgba(78, 115, 223, 1)',
+                            'rgba(78, 115, 223, 1)',
+                            'rgba(78, 115, 223, 1)',
+                            'rgba(78, 115, 223, 1)',
+                            'rgba(78, 115, 223, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
