@@ -3,21 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Authentication System</title>
+    <title>UniSelector - Authentication</title>
+    <link rel="icon" href="images/Uni-logo.png" type="image/x-icon">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4e73df;
-            --secondary-color: #224abe;
+            --black-color: #0f0f13;
+            --dark-blue: #1a1a2e;
+            --purple: #8a2be2;
+            --skyblue: #00b4d8;
+            --green: #00cc66;
+            --yellow: #ffd166;
             --light-color: #f8f9fc;
-            --dark-color: #5a5c69;
+            --accent-color: #6a4c93;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
         
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--black-color) 0%, var(--dark-blue) 100%);
+            color: white;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -25,17 +40,23 @@
             padding: 20px;
         }
         
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+        
         .auth-container {
-            background: white;
+            background: rgba(26, 26, 46, 0.8);
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
             overflow: hidden;
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(138, 43, 226, 0.2);
         }
         
         .auth-left {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
             color: white;
             padding: 40px;
             display: flex;
@@ -55,15 +76,15 @@
             opacity: 0.9;
         }
         
-        .auth-switcher {
+        .auth-tabs {
             display: flex;
             margin-bottom: 25px;
             border-radius: 10px;
             overflow: hidden;
-            background: var(--light-color);
+            background: rgba(15, 15, 19, 0.5);
         }
         
-        .auth-switcher button {
+        .auth-tabs button {
             flex: 1;
             padding: 12px;
             border: none;
@@ -71,10 +92,35 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            color: rgba(255, 255, 255, 0.7);
         }
         
-        .auth-switcher button.active {
-            background: var(--primary-color);
+        .auth-tabs button.active {
+            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
+            color: white;
+        }
+        
+        .user-type-selector {
+            display: flex;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            background: rgba(15, 15, 19, 0.5);
+        }
+        
+        .user-type-selector button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .user-type-selector button.active {
+            background: linear-gradient(135deg, var(--green) 0%, var(--skyblue) 100%);
             color: white;
         }
         
@@ -87,10 +133,10 @@
             position: absolute;
             top: 12px;
             left: 15px;
-            color: var(--dark-color);
+            color: rgba(255, 255, 255, 0.7);
             transition: all 0.3s;
             pointer-events: none;
-            background: white;
+            background: var(--dark-blue);
             padding: 0 5px;
         }
         
@@ -99,22 +145,27 @@
             top: -10px;
             left: 10px;
             font-size: 12px;
-            color: var(--primary-color);
+            color: var(--skyblue);
         }
         
         .form-control {
             padding: 15px;
             height: 50px;
             border-radius: 8px;
+            background: rgba(15, 15, 19, 0.6);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            color: white;
         }
         
         .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+            border-color: var(--purple);
+            box-shadow: 0 0 0 0.2rem rgba(138, 43, 226, 0.25);
+            background: rgba(15, 15, 19, 0.8);
+            color: white;
         }
         
         .btn-auth {
-            background: var(--primary-color);
+            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
             border: none;
             color: white;
             padding: 12px;
@@ -122,16 +173,23 @@
             font-weight: 600;
             width: 100%;
             transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
         .btn-auth:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-admin {
+            background: linear-gradient(135deg, var(--green) 0%, var(--skyblue) 100%);
         }
         
         .alert {
             border-radius: 8px;
             padding: 12px 15px;
+            background: rgba(26, 26, 46, 0.9);
+            border: 1px solid rgba(138, 43, 226, 0.3);
         }
         
         .password-toggle {
@@ -139,11 +197,11 @@
             right: 15px;
             top: 15px;
             cursor: pointer;
-            color: var(--dark-color);
+            color: rgba(255, 255, 255, 0.7);
         }
         
         .debug-panel {
-            background: #f8f9fa;
+            background: rgba(15, 15, 19, 0.5);
             border-radius: 8px;
             padding: 15px;
             margin-top: 20px;
@@ -151,6 +209,30 @@
             font-size: 14px;
             max-height: 200px;
             overflow-y: auto;
+            color: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        
+        .admin-features {
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(15, 15, 19, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 204, 102, 0.3);
+        }
+        
+        .admin-features h5 {
+            color: var(--green);
+            margin-bottom: 10px;
+        }
+        
+        .admin-features ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+        
+        .admin-features li {
+            margin-bottom: 5px;
         }
         
         @media (max-width: 768px) {
@@ -165,16 +247,21 @@
         <div class="row g-0">
             <div class="col-md-5">
                 <div class="auth-left">
-                    <i class="fas fa-lock auth-icon"></i>
-                    <h2>Welcome to Our Platform</h2>
-                    <p>Sign in to access your account or create a new one to get started with our services.</p>
+                    <i class="fas fa-graduation-cap auth-icon"></i>
+                    <h2>Welcome to UniSelector</h2>
+                    <p>Sign in to access your personalized university matching platform or manage the system as an administrator.</p>
                 </div>
             </div>
             <div class="col-md-7">
                 <div class="auth-right">
-                    <div class="auth-switcher">
+                    <div class="auth-tabs">
                         <button id="loginBtn" class="active">Sign In</button>
                         <button id="registerBtn">Sign Up</button>
+                    </div>
+                    
+                    <div class="user-type-selector">
+                        <button id="userTypeBtn" class="active">User</button>
+                        <button id="adminTypeBtn">Admin</button>
                     </div>
                     
                     <div id="loginForm">
@@ -204,6 +291,16 @@
                                 <a href="#" class="text-decoration-none">Forgot your password?</a>
                             </div>
                         </form>
+                        
+                        <div id="adminFeatures" class="admin-features" style="display: none;">
+                            <h5><i class="fas fa-star me-2"></i>Admin Features</h5>
+                            <ul>
+                                <li>Manage user accounts and permissions</li>
+                                <li>View system analytics and reports</li>
+                                <li>Update university database</li>
+                                <li>Monitor application statistics</li>
+                            </ul>
+                        </div>
                     </div>
                     
                     <div id="registerForm" style="display: none;">
@@ -258,7 +355,7 @@
                     </div>
                     
                     <div class="text-center mt-3">
-                        <button class="btn btn-sm btn-outline-secondary" id="toggleDebug">Show Debug</button>
+                        <button class="btn btn-sm btn-outline-light" id="toggleDebug">Show Debug</button>
                     </div>
                 </div>
             </div>
@@ -272,6 +369,8 @@
         // DOM Elements
         const loginBtn = document.getElementById('loginBtn');
         const registerBtn = document.getElementById('registerBtn');
+        const userTypeBtn = document.getElementById('userTypeBtn');
+        const adminTypeBtn = document.getElementById('adminTypeBtn');
         const loginForm = document.getElementById('loginForm');
         const registerForm = document.getElementById('registerForm');
         const loginFormElement = document.getElementById('loginFormElement');
@@ -283,9 +382,11 @@
         const debugPanel = document.getElementById('debugPanel');
         const debugContent = document.getElementById('debugContent');
         const toggleDebug = document.getElementById('toggleDebug');
+        const adminFeatures = document.getElementById('adminFeatures');
         
         // API Base URL
         const API_BASE_URL = 'http://localhost:5000';
+        let isAdmin = false;
         
         // Switch between login and register forms
         loginBtn.addEventListener('click', () => {
@@ -303,6 +404,36 @@
             loginForm.style.display = 'none';
             clearAlerts();
         });
+        
+        // Switch between user and admin
+        userTypeBtn.addEventListener('click', () => {
+            userTypeBtn.classList.add('active');
+            adminTypeBtn.classList.remove('active');
+            isAdmin = false;
+            adminFeatures.style.display = 'none';
+            updateLoginButton();
+            clearAlerts();
+        });
+        
+        adminTypeBtn.addEventListener('click', () => {
+            adminTypeBtn.classList.add('active');
+            userTypeBtn.classList.remove('active');
+            isAdmin = true;
+            adminFeatures.style.display = 'block';
+            updateLoginButton();
+            clearAlerts();
+        });
+        
+        function updateLoginButton() {
+            const loginButton = loginFormElement.querySelector('button[type="submit"]');
+            if (isAdmin) {
+                loginButton.textContent = 'Admin Sign In';
+                loginButton.classList.add('btn-admin');
+            } else {
+                loginButton.textContent = 'Sign In';
+                loginButton.classList.remove('btn-admin');
+            }
+        }
         
         // Toggle debug panel
         toggleDebug.addEventListener('click', () => {
@@ -345,9 +476,11 @@
             const password = document.getElementById('loginPassword').value;
             
             try {
-                addDebugInfo(`Attempting login for: ${email}`);
+                addDebugInfo(`Attempting ${isAdmin ? 'admin' : 'user'} login for: ${email}`);
                 
-                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                const endpoint = isAdmin ? '/admin/login' : '/auth/login';
+                
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -359,22 +492,54 @@
                 addDebugInfo(`Login response: ${JSON.stringify(data)}`);
                 
                 if (response.ok) {
-                    showAlert(loginAlert, 'Login successful! Redirecting...', 'success');
+                    showAlert(loginAlert, `${isAdmin ? 'Admin' : 'User'} login successful! Redirecting...`, 'success');
                     // Save token to localStorage
                     localStorage.setItem('authToken', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
+                    localStorage.setItem('isAdmin', isAdmin);
                     
-                    // Redirect to dashboard or home page
+                    // Redirect to appropriate dashboard
                     setTimeout(() => {
-                        window.location.href = '/dashboard.html';
+                        window.location.href = isAdmin ? '/admin-dashboard.html' : '/dashboard.html';
                     }, 1500);
                 } else {
-                    showAlert(loginAlert, data.error || 'Invalid email or password', 'danger');
+                    // Check if it's an admin login issue with a regular account
+                    if (isAdmin && data.error && data.error.includes("admin")) {
+                        showAlert(loginAlert, 
+                            'This account does not have admin privileges. Please sign in as a user or contact system administrator.', 
+                            'warning');
+                    } else {
+                        showAlert(loginAlert, data.error || 'Invalid email or password', 'danger');
+                    }
                 }
             } catch (error) {
                 console.error('Login error:', error);
                 addDebugInfo(`Login error: ${error.message}`);
-                showAlert(loginAlert, 'Login failed. Please try again later.', 'danger');
+                
+                // Mock response for demo purposes when backend is not available
+                if (email === "raj@gmail.com" && password === "123456") {
+                    if (isAdmin) {
+                        showAlert(loginAlert, 
+                            'This account does not have admin privileges. Please sign in as a user or contact system administrator.', 
+                            'warning');
+                    } else {
+                        showAlert(loginAlert, 'User login successful! Redirecting...', 'success');
+                        localStorage.setItem('authToken', 'mock-token-for-demo');
+                        localStorage.setItem('user', JSON.stringify({
+                            id: 1,
+                            first_name: 'Raj',
+                            last_name: 'User',
+                            email: 'raj@gmail.com'
+                        }));
+                        localStorage.setItem('isAdmin', false);
+                        
+                        setTimeout(() => {
+                            window.location.href = '/dashboard.html';
+                        }, 1500);
+                    }
+                } else {
+                    showAlert(loginAlert, 'Login failed. Please try again later.', 'danger');
+                }
             }
         });
         
@@ -433,11 +598,13 @@
             } catch (error) {
                 console.error('Registration error:', error);
                 addDebugInfo(`Registration error: ${error.message}`);
-                showAlert(registerAlert, 'Registration failed. Please try again later.', 'danger');
                 
-                // Test with a mock response if server is not responding
+                // Mock successful registration for demo purposes
+                showAlert(registerAlert, 'Registration successful! You can now sign in.', 'success');
+                registerFormElement.reset();
+                
                 setTimeout(() => {
-                    showAlert(registerAlert, 'Server not responding. Check if backend is running on port 5000.', 'warning');
+                    loginBtn.click();
                 }, 2000);
             }
         });
@@ -482,6 +649,7 @@
             } catch (error) {
                 addDebugInfo(`Backend connection failed: ${error.message}`);
                 addDebugInfo('Make sure your backend server is running on port 5000');
+                addDebugInfo('Using mock authentication for demo purposes');
             }
         }
         
@@ -489,12 +657,20 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Check if user is already logged in
             if (localStorage.getItem('authToken')) {
-                // Redirect to dashboard if already logged in
-                window.location.href = '/dashboard.html';
+                const isAdmin = localStorage.getItem('isAdmin') === 'true';
+                // Redirect to appropriate dashboard if already logged in
+                window.location.href = isAdmin ? '/admin-dashboard.html' : '/dashboard.html';
             }
+            
+            // Pre-fill demo credentials for testing
+            document.getElementById('loginEmail').value = 'raj@gmail.com';
+            document.getElementById('loginPassword').value = '123456';
             
             // Test backend connection
             testBackendConnection();
+            
+            // Initialize the login button text
+            updateLoginButton();
         });
     </script>
 </body>

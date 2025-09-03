@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - UniSelector</title>
+    <link rel="icon" href="images/Uni-logo.png" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #224abe;
+            --accent-color: #6610f2;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+            --success-color: #1cc88a;
+            --info-color: #36b9cc;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fc;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        #sidebar {
+            min-height: 100vh;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            z-index: 100;
+            width: 250px;
+        }
+        
+        #sidebar.collapsed {
+            margin-left: -250px;
+        }
+        
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        #sidebar ul.components {
+            padding: 20px 0;
+        }
+        
+        #sidebar ul li a {
+            padding: 15px 20px;
+            display: block;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        #sidebar ul li a:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        #sidebar ul li a i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        #sidebar ul li.active > a {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Main Content */
+        #content {
+            width: calc(100% - 250px);
+            min-height: 100vh;
+            transition: all 0.3s;
+            margin-left: 250px;
+        }
+        
+        #content.collapsed {
+            width: 100%;
+            margin-left: 0;
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            transition: all 0.3s;
+            overflow: hidden;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .card-border-left-primary {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .card-border-left-success {
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .card-border-left-info {
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .card-border-left-warning {
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        /* User profile */
+        .user-profile-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.2);
+            border-radius: 10px;
+        }
+        
+        /* Dashboard stats */
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .stat-text {
+            font-size: 0.9rem;
+            color: #5a5c69;
+        }
+        
+        /* Tables */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+            overflow: hidden;
+        }
+        
+        .table thead th {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(78, 115, 223, 0.05);
+        }
+        
+        .badge-active {
+            background: var(--success-color);
+        }
+        
+        .badge-inactive {
+            background: var(--secondary-color);
+        }
+        
+        /* Action buttons */
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            border-radius: 0.2rem;
+        }
+        
+        /* Modal styles */
+        .modal-content {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        /* Search box */
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            padding-left: 40px;
+            border-radius: 50px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 12px;
+            color: #b7b9cc;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            #sidebar.collapsed {
+                margin-left: -100%;
+            }
+            
+            #content {
+                width: 100%;
+                margin-left: 0;
+            }
+            
+            #content.collapsed {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+        
+        /* UniSelector branding */
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .logo span {
+            color: #ffce47;
+        }
+        
+        .admin-badge {
+            background: var(--warning-color);
+            color: #000;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 p-0" id="sidebar">
+                <div class="sidebar-header">
+                    <div class="logo">Uni<span>Selector</span> <span class="admin-badge">ADMIN</span></div>
+                    <p class="small mb-0">Administration Panel</p>
+                </div>
+                
+                <ul class="list-unstyled components">
+                    <li class="active">
+                        <a href="#">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-users"></i>
+                            User Management
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-university"></i>
+                            Universities
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-chart-bar"></i>
+                            Analytics
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-cog"></i>
+                            Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-shield-alt"></i>
+                            Admin Management
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="px-3 py-4">
+                    <div class="card bg-dark text-white">
+                        <div class="card-body text-center">
+                            <h5><i class="fas fa-database"></i> System Status</h5>
+                            <p class="small">All systems operational</p>
+                            <div class="d-flex justify-content-between">
+                                <small>Users: 247</small>
+                                <small>Active: 198</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-md-9 col-lg-10 p-0" id="content">
+                <!-- Navbar -->
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <div class="container-fluid">
+                        <button id="sidebarToggle" class="btn btn-primary">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown me-3">
+                                <a class="btn btn-light dropdown-toggle" href="#" role="button" id="notificationsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="badge bg-danger rounded-pill">5</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationsDropdown">
+                                    <li><a class="dropdown-item" href="#">New user registered</a></li>
+                                    <li><a class="dropdown-item" href="#">3 users awaiting approval</a></li>
+                                    <li><a class="dropdown-item" href="#">System backup completed</a></li>
+                                </ul>
+                            </div>
+                            
+                            <div class="dropdown">
+                                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="https://ui-avatars.com/api/?name=Admin&background=224abe&color=ffffff" class="user-profile-img me-2">
+                                    <span id="userName">Admin User</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i> Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Settings</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" id="logoutBtn"><i class="fas fa-sign-out-alt me-2"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+
+                <!-- Main content -->
+                <div class="container-fluid px-4">
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Admin Dashboard</h1>
+                        <div>
+                            <button class="btn btn-success me-2">
+                                <i class="fas fa-download fa-sm"></i> Generate Report
+                            </button>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus fa-sm"></i> Add New User
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-border-left-primary h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="stat-text text-primary">TOTAL USERS</div>
+                                            <div class="stat-number">247</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-border-left-success h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="stat-text text-success">ACTIVE USERS</div>
+                                            <div class="stat-number">198</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-border-left-info h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="stat-text text-info">NEW THIS WEEK</div>
+                                            <div class="stat-number">24</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-user-plus fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card card-border-left-warning h-100">
+                                <div class="card-body">
+                                    <div class="row align-items-center">
+                                        <div class="col">
+                                            <div class="stat-text text-warning">PENDING ACTION</div>
+                                            <div class="stat-number">7</div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-exclamation-circle fa-2x text-gray-300"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Management Section -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card mb-4">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">User Management</h6>
+                                    <div class="d-flex">
+                                        <div class="search-box me-2">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" class="form-control form-control-sm" placeholder="Search users..." id="userSearch">
+                                        </div>
+                                        <select class="form-select form-select-sm" id="filterStatus">
+                                            <option value="">All Users</option>
+                                            <option value="active">Active</option>
+                                            <option value="inactive">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-container">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover" id="usersTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>ID</th>
+                                                        <th>Name</th>
+                                                        <th>Email</th>
+                                                        <th>Status</th>
+                                                        <th>Joined</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>1</td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="https://ui-avatars.com/api/?name=John+Doe&background=4e73df&color=ffffff" class="user-profile-img me-2">
+                                                                John Doe
+                                                            </div>
+                                                        </td>
+                                                        <td>john.doe@example.com</td>
+                                                        <td><span class="badge badge-active">Active</span></td>
+                                                        <td>2023-10-15</td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-info btn-action view-user" data-bs-toggle="tooltip" title="View Details">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-warning btn-action edit-user" data-bs-toggle="tooltip" title="Edit User">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger btn-action delete-user" data-bs-toggle="tooltip" title="Delete User">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>2</td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="https://ui-avatars.com/api/?name=Jane+Smith&background=1cc88a&color=ffffff" class="user-profile-img me-2">
+                                                                Jane Smith
+                                                            </div>
+                                                        </td>
+                                                        <td>jane.smith@example.com</td>
+                                                        <td><span class="badge badge-active">Active</span></td>
+                                                        <td>2023-10-10</td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-info btn-action view-user" data-bs-toggle="tooltip" title="View Details">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-warning btn-action edit-user" data-bs-toggle="tooltip" title="Edit User">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger btn-action delete-user" data-bs-toggle="tooltip" title="Delete User">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>3</td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="https://ui-avatars.com/api/?name=Robert+Johnson&background=e74a3b&color=ffffff" class="user-profile-img me-2">
+                                                                Robert Johnson
+                                                            </div>
+                                                        </td>
+                                                        <td>robert.j@example.com</td>
+                                                        <td><span class="badge badge-inactive">Inactive</span></td>
+                                                        <td>2023-09-22</td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-info btn-action view-user" data-bs-toggle="tooltip" title="View Details">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-warning btn-action edit-user" data-bs-toggle="tooltip" title="Edit User">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger btn-action delete-user" data-bs-toggle="tooltip" title="Delete User">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>4</td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="https://ui-avatars.com/api/?name=Sarah+Williams&background=f6c23e&color=000000" class="user-profile-img me-2">
+                                                                Sarah Williams
+                                                            </div>
+                                                        </td>
+                                                        <td>sarah.w@example.com</td>
+                                                        <td><span class="badge badge-active">Active</span></td>
+                                                        <td>2023-10-05</td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-info btn-action view-user" data-bs-toggle="tooltip" title="View Details">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-warning btn-action edit-user" data-bs-toggle="tooltip" title="Edit User">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger btn-action delete-user" data-bs-toggle="tooltip" title="Delete User">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>5</td>
+                                                        <td>
+                                                            <div class="d-flex align-items-center">
+                                                                <img src="https://ui-avatars.com/api/?name=Michael+Brown&background=36b9cc&color=ffffff" class="user-profile-img me-2">
+                                                                Michael Brown
+                                                            </div>
+                                                        </td>
+                                                        <td>michael.b@example.com</td>
+                                                        <td><span class="badge badge-active">Active</span></td>
+                                                        <td>2023-10-18</td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-info btn-action view-user" data-bs-toggle="tooltip" title="View Details">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-warning btn-action edit-user" data-bs-toggle="tooltip" title="Edit User">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-danger btn-action delete-user" data-bs-toggle="tooltip" title="Delete User">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Pagination -->
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination justify-content-center mt-4">
+                                            <li class="page-item disabled">
+                                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                            </li>
+                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#">Next</a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white mt-5">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; UniSelector 2023 - Admin Dashboard</span>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Detail Modal -->
+    <div class="modal fade" id="userDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img src="https://ui-avatars.com/api/?name=John+Doe&background=4e73df&color=ffffff&size=120" class="rounded-circle mb-3">
+                            <h4>John Doe</h4>
+                            <p class="text-muted">ID: 1</p>
+                            <span class="badge bg-success">Active</span>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">Email</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="text-muted mb-0">john.doe@example.com</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">Phone</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="text-muted mb-0">(555) 123-4567</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">Joined</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="text-muted mb-0">October 15, 2023</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">Last Login</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="text-muted mb-0">Today, 10:30 AM</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-4">
+                                    <p class="mb-0">Status</p>
+                                </div>
+                                <div class="col-sm-8">
+                                    <p class="text-muted mb-0">Verified</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h5>Activity Summary</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6>University Matches</h6>
+                                    <h3>12</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <h6>Saved Programs</h6>
+                                    <h3>7</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Edit User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this user? This action cannot be undone.</p>
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Warning: Deleting a user will remove all their data from the system.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDelete">Delete User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // DOM Elements
+        const userNameElement = document.getElementById('userName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+        const userSearch = document.getElementById('userSearch');
+        const filterStatus = document.getElementById('filterStatus');
+        const usersTable = document.getElementById('usersTable');
+        const viewUserButtons = document.querySelectorAll('.view-user');
+        const editUserButtons = document.querySelectorAll('.edit-user');
+        const deleteUserButtons = document.querySelectorAll('.delete-user');
+        const userDetailModal = new bootstrap.Modal(document.getElementById('userDetailModal'));
+        const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+        const confirmDeleteBtn = document.getElementById('confirmDelete');
+
+        // Check if admin is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const authToken = localStorage.getItem('authToken');
+            const adminData = localStorage.getItem('admin');
+            
+            if (!authToken) {
+                // Redirect to login if not authenticated
+                window.location.href = 'sign-in.html';
+                return;
+            }
+            
+            // Display admin data if available
+            if (adminData) {
+                const admin = JSON.parse(adminData);
+                userNameElement.textContent = admin.username;
+                
+                // Update avatar with admin's initials
+                const avatar = document.querySelector('.user-profile-img');
+                if (avatar) {
+                    avatar.src = `https://ui-avatars.com/api/?name=${admin.username}&background=224abe&color=ffffff`;
+                }
+            }
+            
+            // Initialize tooltips
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Clear authentication data
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('admin');
+            
+            // Redirect to login page
+            window.location.href = 'sign-in.html';
+        });
+
+        // Sidebar toggle for mobile
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            content.classList.toggle('collapsed');
+            
+            // Change icon based on state
+            const icon = sidebarToggle.querySelector('i');
+            if (sidebar.classList.contains('collapsed')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        });
+
+        // User search functionality
+        userSearch.addEventListener('keyup', function() {
+            const searchText = this.value.toLowerCase();
+            const rows = usersTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const name = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+                const email = rows[i].getElementsByTagName('td')[2].textContent.toLowerCase();
+                
+                if (name.includes(searchText) || email.includes(searchText)) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+
+        // Filter by status
+        filterStatus.addEventListener('change', function() {
+            const status = this.value;
+            const rows = usersTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+            
+            for (let i = 0; i < rows.length; i++) {
+                const statusCell = rows[i].getElementsByTagName('td')[3];
+                const userStatus = statusCell.textContent.toLowerCase().includes('active') ? 'active' : 'inactive';
+                
+                if (status === '' || userStatus === status) {
+                    rows[i].style.display = '';
+                } else {
+                    rows[i].style.display = 'none';
+                }
+            }
+        });
+
+        // View user details
+        viewUserButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                userDetailModal.show();
+            });
+        });
+
+        // Edit user
+        editUserButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                alert('Edit user functionality would open here.');
+            });
+        });
+
+        // Delete user
+        deleteUserButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                deleteUserModal.show();
+            });
+        });
+
+        // Confirm delete
+        confirmDeleteBtn.addEventListener('click', function() {
+            alert('User would be deleted here. This is a demo.');
+            deleteUserModal.hide();
+        });
+    </script>
+</body>
+</html>
