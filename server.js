@@ -134,16 +134,11 @@ const createAdminsTable = (db) => {
     const sql = `
         CREATE TABLE IF NOT EXISTS admins (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            username VARCHAR(50) UNIQUE NOT NULL,
+            first_name VARCHAR(50) NOT NULL,
+            last_name VARCHAR(50) NOT NULL,
             email VARCHAR(100) UNIQUE NOT NULL,
             password VARCHAR(255) NOT NULL,
-            full_name VARCHAR(100) NOT NULL,
-            role ENUM('superadmin', 'admin', 'moderator') DEFAULT 'admin',
-            permissions JSON,
-            is_active BOOLEAN DEFAULT TRUE,
-            last_login TIMESTAMP NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `;
     
@@ -163,46 +158,16 @@ const createAdminsTable = (db) => {
 const createDefaultAdmin = (db) => {
     const checkSql = 'SELECT COUNT(*) as count FROM admins';
     db.query(checkSql, async (err, results) => {
-        if (err) {
-            console.error('Error checking admin accounts: ', err);
-            return;
-        }
-        
         if (results[0].count === 0) {
-            try {
-                const hashedPassword = await bcrypt.hash('admin123', 10);
-                const insertSql = `
-                    INSERT INTO admins (username, email, password, full_name, role, permissions) 
-                    VALUES (?, ?, ?, ?, ?, ?)
-                `;
-                
-                const permissions = JSON.stringify({
-                    users: ['create', 'read', 'update', 'delete'],
-                    admins: ['read'],
-                    content: ['create', 'read', 'update', 'delete'],
-                    settings: ['read']
-                });
-                
-                db.query(insertSql, [
-                    'admin', 
-                    'admin@uniselector.com', 
-                    hashedPassword, 
-                    'System Administrator', 
-                    'superadmin', 
-                    permissions
-                ], (err, results) => {
-                    if (err) {
-                        console.error('Error creating default admin: ', err);
-                    } else {
-                        console.log('Default admin account created: admin@uniselector.com / admin123');
-                    }
-                });
-            } catch (error) {
-                console.error('Error hashing password for default admin: ', error);
-            }
+            const hashedPassword = await bcrypt.hash('123456', 10);
+            db.query(
+                `INSERT INTO admins (first_name, last_name, email, password) VALUES (?, ?, ?, ?)`,
+                ['Shivan', 'Mishra', 'shivrom.2020@gmail.com', hashedPassword]
+            );
         }
     });
 };
+
 
 // Middleware to get database connection
 app.use((req, res, next) => {
@@ -210,11 +175,52 @@ app.use((req, res, next) => {
     next();
 });
 
+// Middleware to verify JWT token for users
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+    if (!token) {
+        return res.status(401).json({ error: 'Access token required' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid or expired token' });
+        }
+        req.user = user;
+        next();
+    });
+};
+
+// Middleware to verify JWT token for admins
+const authenticateAdmin = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
+
+    if (!token) {
+        return res.status(401).json({ error: 'Access token required' });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, admin) => {
+        if (err) {
+            return res.status(403).json({ error: 'Invalid or expired token' });
+        }
+        
+        if (!admin.adminId) {
+            return res.status(403).json({ error: 'Admin access required' });
+        }
+        
+        req.admin = admin;
+        next();
+    });
+};
+
 // Authentication Routes
 
 // Register a new user
 app.post('/auth/register', async (req, res) => {
-    const { first_name, last_name, email, password } = req.body;
+    const {id, first_name, last_name, email, password } = req.body;
     
     // Basic validation
     if (!first_name || !last_name || !email || !password) {
@@ -242,8 +248,8 @@ app.post('/auth/register', async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             
             // Insert user into database
-            const insertSql = 'INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
-            req.db.query(insertSql, [first_name, last_name, email, hashedPassword], (err, results) => {
+            const insertSql = 'INSERT INTO users (id, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)';
+            req.db.query(insertSql, [id, first_name, last_name, email, hashedPassword], (err, results) => {
                 if (err) {
                     console.error('Error creating user: ', err);
                     return res.status(500).json({ error: 'Error creating user' });
@@ -259,6 +265,63 @@ app.post('/auth/register', async (req, res) => {
                 res.json({ 
                     message: 'User registered successfully', 
                     userId: results.insertId,
+                    token: token
+                });
+            });
+        } catch (error) {
+            console.error('Error hashing password: ', error);
+            return res.status(500).json({ error: 'Server error' });
+        }
+    });
+});
+
+// Register a new admin
+app.post('/admin/register', async (req, res) => {
+    const { first_name, last_name, email, password } = req.body;
+    
+    // Basic validation
+    if (!first_name || !last_name || !email || !password) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+    
+    if (password.length < 6) {
+        return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+    
+    // Check if admin already exists
+    const checkSql = 'SELECT * FROM admins WHERE email = ?';
+    req.db.query(checkSql, [email], async (err, results) => {
+        if (err) {
+            console.error('Error checking admin: ', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        
+        if (results.length > 0) {
+            return res.status(409).json({ error: 'Admin already exists with this email' });
+        }
+        
+        try {
+            // Hash password
+            const hashedPassword = await bcrypt.hash(password, 10);
+            
+            // Insert admin into database
+            const insertSql = 'INSERT INTO admins (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
+            req.db.query(insertSql, [first_name, last_name, email, hashedPassword], (err, results) => {
+                if (err) {
+                    console.error('Error creating admin: ', err);
+                    return res.status(500).json({ error: 'Error creating admin' });
+                }
+                
+                // Generate JWT token
+                const token = jwt.sign(
+                    { adminId: results.insertId, email: email, role: 'admin' },
+                    JWT_SECRET,
+                    { expiresIn: '24h' }
+                );
+                
+                res.json({ 
+                    message: 'Admin registered successfully', 
+                    adminId: results.insertId,
                     token: token
                 });
             });
@@ -325,21 +388,21 @@ app.post('/auth/login', (req, res) => {
 
 // Admin login
 app.post('/admin/login', (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Email and password are required' });
     }
     
-    const sql = 'SELECT * FROM admins WHERE username = ? AND is_active = TRUE';
-    req.db.query(sql, [username], async (err, results) => {
+    const sql = 'SELECT * FROM admins WHERE email = ?';
+    req.db.query(sql, [email], async (err, results) => {
         if (err) {
             console.error('Error with admin login: ', err);
             return res.status(500).json({ error: 'Database error' });
         }
         
-        if (results.length === 0) {
-            return res.status(401).json({ error: 'Invalid username or password' });
+         if (results.length === 0) {
+            return res.status(401).json({ error: 'Invalid email or password' });
         }
         
         const admin = results[0];
@@ -349,21 +412,15 @@ app.post('/admin/login', (req, res) => {
             const isMatch = await bcrypt.compare(password, admin.password);
             
             if (!isMatch) {
-                return res.status(401).json({ error: 'Invalid username or password' });
+                return res.status(401).json({ error: 'Invalid email or password' });
             }
-            
-            // Update last login
-            const updateSql = 'UPDATE admins SET last_login = CURRENT_TIMESTAMP WHERE id = ?';
-            req.db.query(updateSql, [admin.id]);
             
             // Generate JWT token
             const token = jwt.sign(
                 { 
                     adminId: admin.id, 
-                    username: admin.username, 
                     email: admin.email,
-                    role: admin.role,
-                    permissions: admin.permissions ? JSON.parse(admin.permissions) : {}
+                    role: 'admin'
                 },
                 JWT_SECRET,
                 { expiresIn: '24h' }
@@ -374,11 +431,10 @@ app.post('/admin/login', (req, res) => {
                 token: token,
                 admin: { 
                     id: admin.id, 
-                    username: admin.username,
+                    first_name: admin.first_name,
+                    last_name: admin.last_name,
                     email: admin.email,
-                    full_name: admin.full_name,
-                    role: admin.role,
-                    permissions: admin.permissions ? JSON.parse(admin.permissions) : {}
+                    role: 'admin'
                 }
             });
         } catch (error) {
@@ -387,47 +443,6 @@ app.post('/admin/login', (req, res) => {
         }
     });
 });
-
-// Middleware to verify JWT token for users
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-
-    if (!token) {
-        return res.status(401).json({ error: 'Access token required' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) {
-            return res.status(403).json({ error: 'Invalid or expired token' });
-        }
-        req.user = user;
-        next();
-    });
-};
-
-// Middleware to verify JWT token for admins
-const authenticateAdmin = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-
-    if (!token) {
-        return res.status(401).json({ error: 'Access token required' });
-    }
-
-    jwt.verify(token, JWT_SECRET, (err, admin) => {
-        if (err) {
-            return res.status(403).json({ error: 'Invalid or expired token' });
-        }
-        
-        if (!admin.adminId) {
-            return res.status(403).json({ error: 'Admin access required' });
-        }
-        
-        req.admin = admin;
-        next();
-    });
-};
 
 // Protected route example for users
 app.get('/auth/profile', authenticateToken, (req, res) => {
@@ -448,7 +463,7 @@ app.get('/auth/profile', authenticateToken, (req, res) => {
 
 // Protected route example for admins
 app.get('/admin/profile', authenticateAdmin, (req, res) => {
-    const sql = 'SELECT id, username, email, full_name, role, permissions, last_login, created_at FROM admins WHERE id = ?';
+    const sql = 'SELECT id, first_name, last_name, email, created_at FROM admins WHERE id = ?';
     req.db.query(sql, [req.admin.adminId], (err, results) => {
         if (err) {
             console.error('Error fetching admin: ', err);
@@ -459,12 +474,7 @@ app.get('/admin/profile', authenticateAdmin, (req, res) => {
             return res.status(404).json({ error: 'Admin not found' });
         }
         
-        const admin = results[0];
-        if (admin.permissions) {
-            admin.permissions = JSON.parse(admin.permissions);
-        }
-        
-        res.json({ admin: admin });
+        res.json({ admin: results[0] });
     });
 });
 
@@ -483,12 +493,7 @@ app.get('/admin/users', authenticateAdmin, (req, res) => {
 
 // Admin-only route to get all admins
 app.get('/admin/admins', authenticateAdmin, (req, res) => {
-    // Only superadmins can view all admins
-    if (req.admin.role !== 'superadmin') {
-        return res.status(403).json({ error: 'Insufficient permissions' });
-    }
-    
-    const sql = 'SELECT id, username, email, full_name, role, is_active, last_login, created_at FROM admins ORDER BY created_at DESC';
+    const sql = 'SELECT id, first_name, last_name, email, created_at FROM admins ORDER BY created_at DESC';
     req.db.query(sql, (err, results) => {
         if (err) {
             console.error('Error fetching admins: ', err);
