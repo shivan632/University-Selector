@@ -235,6 +235,10 @@
             margin-bottom: 5px;
         }
         
+        .admin-pin-field {
+            display: none;
+        }
+        
         @media (max-width: 768px) {
             .auth-left {
                 display: none;
@@ -278,6 +282,12 @@
                                 <input type="password" class="form-control" id="loginPassword" placeholder=" " required>
                                 <label for="loginPassword">Password</label>
                                 <i class="fas fa-eye password-toggle" id="loginPasswordToggle"></i>
+                            </div>
+                            
+                            <!-- Admin PIN Field for Login -->
+                            <div class="form-group admin-pin-field" id="loginPinField">
+                                <input type="password" class="form-control" id="loginPin" placeholder=" " required>
+                                <label for="loginPin">Admin PIN</label>
                             </div>
                             
                             <div class="form-group form-check mb-3">
@@ -339,6 +349,12 @@
                                 <label for="confirmPassword">Confirm Password</label>
                             </div>
                             
+                            <!-- Admin PIN Field for Registration -->
+                            <div class="form-group admin-pin-field" id="registerPinField">
+                                <input type="password" class="form-control" id="registerPin" placeholder=" " required>
+                                <label for="registerPin">Admin PIN</label>
+                            </div>
+                            
                             <div class="form-group form-check mb-3">
                                 <input type="checkbox" class="form-check-input" id="termsAgree" required>
                                 <label class="form-check-label" for="termsAgree">I agree to the <a href="#" class="text-decoration-none">Terms and Conditions</a></label>
@@ -346,7 +362,7 @@
                             
                             <button type="submit" class="btn-auth">Create Account</button>
                         </form>
-                    </div>
+                    </div> 
                     
                     <!-- Debug Panel -->
                     <div class="debug-panel mt-4" id="debugPanel" style="display: none;">
@@ -362,316 +378,313 @@
         </div>
     </div>
 
+
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-        // DOM Elements
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
-        const userTypeBtn = document.getElementById('userTypeBtn');
-        const adminTypeBtn = document.getElementById('adminTypeBtn');
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const loginFormElement = document.getElementById('loginFormElement');
-        const registerFormElement = document.getElementById('registerFormElement');
-        const loginAlert = document.getElementById('loginAlert');
-        const registerAlert = document.getElementById('registerAlert');
-        const loginPasswordToggle = document.getElementById('loginPasswordToggle');
-        const registerPasswordToggle = document.getElementById('registerPasswordToggle');
-        const debugPanel = document.getElementById('debugPanel');
-        const debugContent = document.getElementById('debugContent');
-        const toggleDebug = document.getElementById('toggleDebug');
-        const adminFeatures = document.getElementById('adminFeatures');
+    // DOM Elements
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const userTypeBtn = document.getElementById('userTypeBtn');
+    const adminTypeBtn = document.getElementById('adminTypeBtn');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginFormElement = document.getElementById('loginFormElement');
+    const registerFormElement = document.getElementById('registerFormElement');
+    const loginAlert = document.getElementById('loginAlert');
+    const registerAlert = document.getElementById('registerAlert');
+    const loginPasswordToggle = document.getElementById('loginPasswordToggle');
+    const registerPasswordToggle = document.getElementById('registerPasswordToggle');
+    const debugPanel = document.getElementById('debugPanel');
+    const debugContent = document.getElementById('debugContent');
+    const toggleDebug = document.getElementById('toggleDebug');
+    const adminFeatures = document.getElementById('adminFeatures');
+    const loginPinField = document.getElementById('loginPinField');
+    const registerPinField = document.getElementById('registerPinField');
+    
+    // API Base URL
+    const API_BASE_URL = 'http://localhost:5000';
+    const ADMIN_PIN = '19113'; // The admin PIN provided by the organization
+    let isAdmin = false;
+    
+    // Switch between login and register forms
+    loginBtn.addEventListener('click', () => {
+        loginBtn.classList.add('active');
+        registerBtn.classList.remove('active');
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        clearAlerts();
+    });
+    
+    registerBtn.addEventListener('click', () => {
+        registerBtn.classList.add('active');
+        loginBtn.classList.remove('active');
+        registerForm.style.display = 'block';
+        loginForm.style.display = 'none';
+        clearAlerts();
+    });
+    
+    // Switch between user and admin
+    userTypeBtn.addEventListener('click', () => {
+        userTypeBtn.classList.add('active');
+        adminTypeBtn.classList.remove('active');
+        isAdmin = false;
+        adminFeatures.style.display = 'none';
+        loginPinField.style.display = 'none';
+        registerPinField.style.display = 'none';
+        updateLoginButton();
+        clearAlerts();
+    });
+    
+    adminTypeBtn.addEventListener('click', () => {
+        adminTypeBtn.classList.add('active');
+        userTypeBtn.classList.remove('active');
+        isAdmin = true;
+        adminFeatures.style.display = 'block';
+        loginPinField.style.display = 'block';
+        registerPinField.style.display = 'block';
+        updateLoginButton();
+        clearAlerts();
+    });
+    
+    function updateLoginButton() {
+        const loginButton = loginFormElement.querySelector('button[type="submit"]');
+        if (isAdmin) {
+            loginButton.textContent = 'Admin Sign In';
+            loginButton.classList.add('btn-admin');
+        } else {
+            loginButton.textContent = 'Sign In';
+            loginButton.classList.remove('btn-admin');
+        }
+    }
+    
+    // Toggle debug panel
+    toggleDebug.addEventListener('click', () => {
+        if (debugPanel.style.display === 'none') {
+            debugPanel.style.display = 'block';
+            toggleDebug.textContent = 'Hide Debug';
+        } else {
+            debugPanel.style.display = 'none';
+            toggleDebug.textContent = 'Show Debug';
+        }
+    });
+    
+    // Toggle password visibility
+    loginPasswordToggle.addEventListener('click', () => {
+        togglePasswordVisibility('loginPassword', loginPasswordToggle);
+    });
+    
+    registerPasswordToggle.addEventListener('click', () => {
+        togglePasswordVisibility('registerPassword', registerPasswordToggle);
+    });
+    
+    function togglePasswordVisibility(inputId, toggleIcon) {
+        const passwordInput = document.getElementById(inputId);
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+    
+    // Handle login form submission
+    loginFormElement.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        // API Base URL
-        const API_BASE_URL = 'http://localhost:5000';
-        let isAdmin = false;
+        const email = document.getElementById('loginEmail').value;
+        const password = document.getElementById('loginPassword').value;
         
-        // Switch between login and register forms
-        loginBtn.addEventListener('click', () => {
-            loginBtn.classList.add('active');
-            registerBtn.classList.remove('active');
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            clearAlerts();
-        });
-        
-        registerBtn.addEventListener('click', () => {
-            registerBtn.classList.add('active');
-            loginBtn.classList.remove('active');
-            registerForm.style.display = 'block';
-            loginForm.style.display = 'none';
-            clearAlerts();
-        });
-        
-        // Switch between user and admin
-        userTypeBtn.addEventListener('click', () => {
-            userTypeBtn.classList.add('active');
-            adminTypeBtn.classList.remove('active');
-            isAdmin = false;
-            adminFeatures.style.display = 'none';
-            updateLoginButton();
-            clearAlerts();
-        });
-        
-        adminTypeBtn.addEventListener('click', () => {
-            adminTypeBtn.classList.add('active');
-            userTypeBtn.classList.remove('active');
-            isAdmin = true;
-            adminFeatures.style.display = 'block';
-            updateLoginButton();
-            clearAlerts();
-        });
-        
-        function updateLoginButton() {
-            const loginButton = loginFormElement.querySelector('button[type="submit"]');
-            if (isAdmin) {
-                loginButton.textContent = 'Admin Sign In';
-                loginButton.classList.add('btn-admin');
-            } else {
-                loginButton.textContent = 'Sign In';
-                loginButton.classList.remove('btn-admin');
+        // For admin login, validate the PIN
+        if (isAdmin) {
+            const pin = document.getElementById('loginPin').value;
+            if (pin !== ADMIN_PIN) {
+                showAlert(loginAlert, 'Invalid admin PIN. Please enter the correct PIN provided by your organization.', 'danger');
+                return;
             }
         }
         
-        // Toggle debug panel
-        toggleDebug.addEventListener('click', () => {
-            if (debugPanel.style.display === 'none') {
-                debugPanel.style.display = 'block';
-                toggleDebug.textContent = 'Hide Debug';
+        try {
+            addDebugInfo(`Attempting ${isAdmin ? 'admin' : 'user'} login for: ${email}`);
+            
+            const endpoint = isAdmin ? '/admin/login' : '/auth/login';
+            
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+            
+            const data = await response.json();
+            addDebugInfo(`Login response: ${JSON.stringify(data)}`);
+            
+            if (response.ok) {
+                showAlert(loginAlert, `${isAdmin ? 'Admin' : 'User'} login successful! Redirecting...`, 'success');
+                // Save token to localStorage
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user || data.admin));
+                localStorage.setItem('isAdmin', isAdmin);
+                
+                // Redirect to appropriate dashboard
+                setTimeout(() => {
+                    window.location.href = isAdmin ? '/admin-dashboard.html' : '/dashboard.html';
+                }, 1500);
             } else {
-                debugPanel.style.display = 'none';
-                toggleDebug.textContent = 'Show Debug';
+                // Check if it's an admin login issue with a regular account
+                if (isAdmin && data.error && data.error.includes("admin")) {
+                    showAlert(loginAlert, 
+                        'This account does not have admin privileges. Please sign in as a user or contact system administrator.', 
+                        'warning');
+                } else {
+                    showAlert(loginAlert, data.error || 'Invalid email or password', 'danger');
+                }
             }
-        });
+        } catch (error) {
+            console.error('Login error:', error);
+            addDebugInfo(`Login error: ${error.message}`);
+            showAlert(loginAlert, 'Login failed. Please try again later.', 'danger');
+        }
+    });
+    
+    // Handle register form submission
+    registerFormElement.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        // Toggle password visibility
-        loginPasswordToggle.addEventListener('click', () => {
-            togglePasswordVisibility('loginPassword', loginPasswordToggle);
-        });
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
         
-        registerPasswordToggle.addEventListener('click', () => {
-            togglePasswordVisibility('registerPassword', registerPasswordToggle);
-        });
+        // Basic validation
+        if (password !== confirmPassword) {
+            showAlert(registerAlert, 'Passwords do not match', 'danger');
+            return;
+        }
         
-        function togglePasswordVisibility(inputId, toggleIcon) {
-            const passwordInput = document.getElementById(inputId);
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
+        if (password.length < 6) {
+            showAlert(registerAlert, 'Password must be at least 6 characters', 'danger');
+            return;
+        }
+        
+        // For admin registration, validate the PIN
+        if (isAdmin) {
+            const pin = document.getElementById('registerPin').value;
+            if (pin !== ADMIN_PIN) {
+                showAlert(registerAlert, 'Invalid admin PIN. Please enter the correct PIN provided by your organization.', 'danger');
+                return;
             }
         }
         
-        // Handle login form submission
-        loginFormElement.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        try {
+            addDebugInfo(`Attempting ${isAdmin ? 'admin' : 'user'} registration for: ${email}`);
+            addDebugInfo(`Data: ${firstName} ${lastName}, ${email}`);
             
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
+            // Use different endpoint for admin vs user registration
+            const endpoint = isAdmin ? '/admin/register' : '/auth/register';
             
-            try {
-                addDebugInfo(`Attempting ${isAdmin ? 'admin' : 'user'} login for: ${email}`);
-                
-                const endpoint = isAdmin ? '/admin/login' : '/auth/login';
-                
-                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email, password })
-                });
-                
-                const data = await response.json();
-                addDebugInfo(`Login response: ${JSON.stringify(data)}`);
-                
-                if (response.ok) {
-                    showAlert(loginAlert, `${isAdmin ? 'Admin' : 'User'} login successful! Redirecting...`, 'success');
-                    // Save token to localStorage
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    localStorage.setItem('isAdmin', isAdmin);
-                    
-                    // Redirect to appropriate dashboard
-                    setTimeout(() => {
-                        window.location.href = isAdmin ? '/admin-dashboard.html' : '/dashboard.html';
-                    }, 1500);
-                } else {
-                    // Check if it's an admin login issue with a regular account
-                    if (isAdmin && data.error && data.error.includes("admin")) {
-                        showAlert(loginAlert, 
-                            'This account does not have admin privileges. Please sign in as a user or contact system administrator.', 
-                            'warning');
-                    } else {
-                        showAlert(loginAlert, data.error || 'Invalid email or password', 'danger');
-                    }
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                addDebugInfo(`Login error: ${error.message}`);
-                
-                // Mock response for demo purposes when backend is not available
-                if (email === "raj@gmail.com" && password === "123456") {
-                    if (isAdmin) {
-                        showAlert(loginAlert, 
-                            'This account does not have admin privileges. Please sign in as a user or contact system administrator.', 
-                            'warning');
-                    } else {
-                        showAlert(loginAlert, 'User login successful! Redirecting...', 'success');
-                        localStorage.setItem('authToken', 'mock-token-for-demo');
-                        localStorage.setItem('user', JSON.stringify({
-                            id: 1,
-                            first_name: 'Raj',
-                            last_name: 'User',
-                            email: 'raj@gmail.com'
-                        }));
-                        localStorage.setItem('isAdmin', false);
-                        
-                        setTimeout(() => {
-                            window.location.href = '/dashboard.html';
-                        }, 1500);
-                    }
-                } else {
-                    showAlert(loginAlert, 'Login failed. Please try again later.', 'danger');
-                }
-            }
-        });
-        
-        // Handle register form submission
-        registerFormElement.addEventListener('submit', async (e) => {
-            e.preventDefault();
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    first_name: firstName, 
+                    last_name: lastName, 
+                    email, 
+                    password 
+                })
+            });
             
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            const data = await response.json();
+            addDebugInfo(`Registration response: ${JSON.stringify(data)}`);
             
-            // Basic validation
-            if (password !== confirmPassword) {
-                showAlert(registerAlert, 'Passwords do not match', 'danger');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showAlert(registerAlert, 'Password must be at least 6 characters', 'danger');
-                return;
-            }
-            
-            try {
-                addDebugInfo(`Attempting registration for: ${email}`);
-                addDebugInfo(`Data: ${firstName} ${lastName}, ${email}`);
-                
-                const response = await fetch(`${API_BASE_URL}/auth/register`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
-                        first_name: firstName, 
-                        last_name: lastName, 
-                        email, 
-                        password 
-                    })
-                });
-                
-                const data = await response.json();
-                addDebugInfo(`Registration response: ${JSON.stringify(data)}`);
-                
-                if (response.ok) {
-                    showAlert(registerAlert, 'Registration successful! You can now sign in.', 'success');
-                    // Clear form
-                    registerFormElement.reset();
-                    // Switch to login form after a delay
-                    setTimeout(() => {
-                        loginBtn.click();
-                    }, 2000);
-                } else {
-                    showAlert(registerAlert, data.error || 'Registration failed', 'danger');
-                }
-            } catch (error) {
-                console.error('Registration error:', error);
-                addDebugInfo(`Registration error: ${error.message}`);
-                
-                // Mock successful registration for demo purposes
-                showAlert(registerAlert, 'Registration successful! You can now sign in.', 'success');
+            if (response.ok) {
+                showAlert(registerAlert, `${isAdmin ? 'Admin' : 'User'} registration successful! You can now sign in.`, 'success');
+                // Clear form
                 registerFormElement.reset();
-                
+                // Switch to login form after a delay
                 setTimeout(() => {
                     loginBtn.click();
                 }, 2000);
+            } else {
+                showAlert(registerAlert, data.error || 'Registration failed', 'danger');
             }
-        });
-        
-        // Helper function to show alerts
-        function showAlert(container, message, type) {
-            container.innerHTML = `
-                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            `;
+        } catch (error) {
+            console.error('Registration error:', error);
+            addDebugInfo(`Registration error: ${error.message}`);
+            showAlert(registerAlert, 'Registration failed. Please try again later.', 'danger');
         }
-        
-        // Add debug information
-        function addDebugInfo(message) {
-            const timestamp = new Date().toLocaleTimeString();
-            debugContent.innerHTML += `<div>[${timestamp}] ${message}</div>`;
-            debugContent.scrollTop = debugContent.scrollHeight;
-        }
-        
-        // Clear all alerts
-        function clearAlerts() {
-            loginAlert.innerHTML = '';
-            registerAlert.innerHTML = '';
-        }
-        
-        // Test backend connection on page load
-        async function testBackendConnection() {
-            try {
-                addDebugInfo('Testing connection to backend...');
-                const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email: 'test@test.com', password: 'test' })
-                });
-                
-                // We don't care about the response content, just if we can connect
-                addDebugInfo(`Backend connection: ${response.status} ${response.statusText}`);
-            } catch (error) {
-                addDebugInfo(`Backend connection failed: ${error.message}`);
-                addDebugInfo('Make sure your backend server is running on port 5000');
-                addDebugInfo('Using mock authentication for demo purposes');
-            }
-        }
-        
-        // Initialize the application
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if user is already logged in
-            if (localStorage.getItem('authToken')) {
-                const isAdmin = localStorage.getItem('isAdmin') === 'true';
-                // Redirect to appropriate dashboard if already logged in
-                window.location.href = isAdmin ? '/admin-dashboard.html' : '/dashboard.html';
-            }
+    });
+    
+    // Helper function to show alerts
+    function showAlert(container, message, type) {
+        container.innerHTML = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        `;
+    }
+    
+    // Add debug information
+    function addDebugInfo(message) {
+        const timestamp = new Date().toLocaleTimeString();
+        debugContent.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+        debugContent.scrollTop = debugContent.scrollHeight;
+    }
+    
+    // Clear all alerts
+    function clearAlerts() {
+        loginAlert.innerHTML = '';
+        registerAlert.innerHTML = '';
+    }
+    
+    // Test backend connection on page load
+    async function testBackendConnection() {
+        try {
+            addDebugInfo('Testing connection to backend...');
+            const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: 'test@test.com', password: 'test' })
+            });
             
-            // Pre-fill demo credentials for testing
-            document.getElementById('loginEmail').value = 'raj@gmail.com';
-            document.getElementById('loginPassword').value = '123456';
-            
-            // Test backend connection
-            testBackendConnection();
-            
-            // Initialize the login button text
-            updateLoginButton();
-        });
-    </script>
+            // We don't care about the response content, just if we can connect
+            addDebugInfo(`Backend connection: ${response.status} ${response.statusText}`);
+        } catch (error) {
+            addDebugInfo(`Backend connection failed: ${error.message}`);
+            addDebugInfo('Make sure your backend server is running on port 5000');
+        }
+    }
+    
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check if user is already logged in
+        if (localStorage.getItem('authToken')) {
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            // Redirect to appropriate dashboard if already logged in
+            window.location.href = isAdmin ? '/admin-dashboard.html' : '/dashboard.html';
+        }
+        
+        // Remove demo credentials
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+        
+        // Test backend connection
+        testBackendConnection();
+        
+        // Initialize the login button text
+        updateLoginButton();
+    });
+</script>
 </body>
 </html>
