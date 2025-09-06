@@ -1,374 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UniSelector( University Selector )</title>
-    <link rel="icon" href="images/Uni-logo.png" type="image/x-icon">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Your existing CSS remains the same, just adding fixes for the slideshow */
-        
-        /* University Slideshow - Fixed Styles */
-        .university-slideshow {
-            padding: 40px 0;
-            background: rgba(26, 26, 46, 0.5);
-        }
-        
-        .slideshow-container {
-            max-width: 1200px;
-            position: relative;
-            margin: auto;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-            height: 400px; /* Fixed height */
-        }
-        
-        .slide {
-            display: none;
-            position: relative;
-            height: 100%;
-        }
-        
-        .slide-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.7);
-        }
-        
-        .slide-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 30px;
-            background: linear-gradient(to top, rgba(15, 15, 19, 0.9), transparent);
-        }
-        
-        .slide-title {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: white;
-        }
-        
-        .slide-desc {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 600px;
-        }
-        
-        .slide-dots {
-            text-align: center;
-            padding: 20px 0;
-        }
-        
-        .dot {
-            cursor: pointer;
-            height: 12px;
-            width: 12px;
-            margin: 0 5px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            display: inline-block;
-            transition: background-color 0.3s;
-        }
-        
-        .active-dot, .dot:hover {
-            background-color: var(--purple);
-        }
-        
-        /* Fade animation for slides */
-        .fade {
-            animation-name: fade;
-            animation-duration: 1.5s;
-        }
-        
-        @keyframes fade {
-            from {opacity: .4}
-            to {opacity: 1}
-        }
-        
-        /* Rest of your CSS remains unchanged */
-        :root {
-            --black-color: #0f0f13;
-            --dark-blue: #1a1a2e;
-            --purple: #8a2be2;
-            --skyblue: #00b4d8;
-            --green: #00cc66;
-            --yellow: #ffd166;
-            --light-color: #f8f9fc;
-            --accent-color: #6a4c93;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--black-color) 0%, var(--dark-blue) 100%);
-            color: white;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Playfair Display', serif;
-        }
-        
-        /* Navigation */
-        .navbar {
-            background: rgba(15, 15, 19, 0.9);
-            backdrop-filter: blur(10px);
-            padding: 15px 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(138, 43, 226, 0.2);
-        }
-        
-        .navbar-brand {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: white !important;
-        }
-        
-        .navbar-brand span {
-            background: linear-gradient(to right, var(--purple), var(--skyblue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .nav-link {
-            color: rgba(255, 255, 255, 0.8) !important;
-            font-weight: 500;
-            margin: 0 10px;
-            transition: all 0.3s;
-            position: relative;
-        }
-        
-        .nav-link:hover {
-            color: var(--yellow) !important;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(to right, var(--purple), var(--skyblue));
-            transition: width 0.3s;
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        
-        .btn-nav {
-            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 8px 20px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-nav:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Introduction Section */
-        .intro-section {
-            padding: 100px 0 80px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .intro-content {
-            max-width: 1200px;
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>UniSelector( University Selector )</title>
+        <link rel="icon" href="images/Uni-logo.png" type="image/x-icon">
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <!-- Google Fonts -->
+        <link
+            href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet">
+        <style>
+            /* Your existing CSS remains the same, just adding fixes for the slideshow */
+
+            /**/
+        .container {
+            max-width: 100%;
             margin: 0 auto;
-            padding: 0 20px;
-            position: relative;
-            z-index: 2;
         }
         
-        .intro-heading {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        
-        .intro-title {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--green), var(--skyblue), var(--purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        
-        .intro-subtitle {
-            font-size: 1.5rem;
-            opacity: 0.9;
-            max-width: 800px;
-            margin: 0 auto;
-            line-height: 1.6;
-        }
-        
-        .intro-features {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 60px;
-        }
-        
-        .intro-feature {
-            background: rgba(26, 26, 46, 0.6);
-            border-radius: 15px;
-            padding: 30px;
-            width: 100%;
-            max-width: 350px;
-            text-align: center;
-            transition: all 0.3s;
-            border: 1px solid rgba(138, 43, 226, 0.2);
-            backdrop-filter: blur(10px);
-        }
-        
-        .intro-feature:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: var(--purple);
-        }
-        
-        .intro-feature-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            display: inline-block;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
+        /* Enhanced Welcome Section */
+        .welcome-section {
+            min-height: 60vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-        }
-        
-        .feature-1 .intro-feature-icon {
-            background: linear-gradient(135deg, rgba(0, 204, 102, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
-            color: var(--green);
-        }
-        
-        .feature-2 .intro-feature-icon {
-            background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
-            color: var(--skyblue);
-        }
-        
-        .feature-3 .intro-feature-icon {
-            background: linear-gradient(135deg, rgba(255, 209, 102, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
-            color: var(--yellow);
-        }
-        
-        .intro-feature-title {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: white;
-        }
-        
-        .intro-feature-description {
-            opacity: 0.8;
-            line-height: 1.6;
-        }
-        
-        .intro-cta {
-            text-align: center;
-            margin-top: 60px;
-        }
-        
-        .btn-intro {
-            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
+            padding: 40px 20px;
+            border-radius: 20px;
+            background: rgba(26, 26, 46, 0.4);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
         }
         
-        .btn-intro:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-        
-        .btn-intro::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
+        .welcome-content {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            position: relative;
+            z-index: 4;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: all 0.5s;
+            padding: 40px;
+            background: rgba(15, 15, 19, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         
-        .btn-intro:hover::before {
-            left: 100%;
+        .logo-container {
+            flex: 0 0 40%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .logo-image {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            animation: fadeInLeft 1s ease-out;
+            border: 2px solid white;
+        }
+        
+        .text-content {
+            flex: 0 0 60%;
+            text-align: left;
+        }
+        
+        .main-title {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(to right, var(--green), var(--skyblue), var(--purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            color: var(--light-color);
+            font-weight: 400;
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            animation: fadeIn 1.5s ease-out 0.6s both;
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        .stats {
+            display: flex;
+            gap: 30px;
+            animation: fadeIn 1s ease-out 1.2s both;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--yellow), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+            color: var(--light-color);
         }
         
         /* Animated background elements */
-        .intro-shape {
+        .welcome-shape {
             position: absolute;
             z-index: 1;
+            border-radius: 50%;
+            opacity: 0.5;
+            filter: blur(40px);
         }
         
         .shape-1 {
-            top: 100px;
+            top: 10%;
             left: 5%;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--green), transparent);
-            opacity: 0.3;
-            animation: float 8s ease-in-out infinite;
+            width: 250px;
+            height: 250px;
+            background: var(--purple);
+            animation: float 15s ease-in-out infinite;
         }
         
         .shape-2 {
-            top: 300px;
-            right: 10%;
-            width: 150px;
-            height: 150px;
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            background: linear-gradient(135deg, var(--skyblue), transparent);
-            opacity: 0.2;
-            animation: float 10s ease-in-out infinite;
+            bottom: 10%;
+            right: 5%;
+            width: 200px;
+            height: 200px;
+            background: var(--skyblue);
+            animation: float 18s ease-in-out infinite reverse;
         }
         
         .shape-3 {
-            bottom: 200px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 180px;
+            height: 180px;
+            background: var(--green);
+            animation: pulse 10s ease-in-out infinite;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.7;
+            z-index: 2;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .icon-1 {
+            top: 20%;
+            right: 15%;
+            color: var(--yellow);
+            animation-delay: 1s;
+        }
+        
+        .icon-2 {
+            bottom: 30%;
             left: 15%;
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--purple), transparent);
-            opacity: 0.2;
-            animation: float 7s ease-in-out infinite;
+            color: var(--skyblue);
+            animation-delay: 2s;
+        }
+        
+        .icon-3 {
+            top: 40%;
+            right: 25%;
+            color: var(--green);
+            animation-delay: 3s;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
         
         @keyframes float {
@@ -383,1094 +247,1650 @@
             }
         }
         
-        /* About Section */
-        .about-section {
-            padding: 80px 0;
-            background: rgba(26, 26, 46, 0.5);
-        }
-        
-        .about-content {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .about-text {
-            flex: 1;
-        }
-        
-        .about-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-        }
-        
-        .about-title {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--green), var(--skyblue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .about-description {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 30px;
-            opacity: 0.9;
-        }
-        
-        .about-stats {
-            display: flex;
-            gap: 30px;
-            margin-top: 40px;
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(to right, var(--yellow), var(--green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-        
-        .about-img {
-            width: 100%;
-            max-width: 400px;
-            border-radius: 15px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Features Section */
-        .features-section {
-            padding: 60px 0;
-            position: relative;
-        }
-        
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        
-        .section-title h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--purple), var(--skyblue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .section-title h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, var(--purple), var(--skyblue));
-        }
-        
-        .section-title p {
-            font-size: 1.2rem;
-            opacity: 0.8;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        /* Features Layout */
-        .features-container {
-            display: flex;
-            flex-direction: column;
-            gap: 80px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .feature-row {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-        }
-        
-        .feature-row.reverse {
-            flex-direction: row-reverse;
-        }
-        
-        .feature-content {
-            flex: 1;
-        }
-        
-        .feature-image {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .feature-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            display: inline-block;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-        }
-        
-        .feature-1 .feature-icon {
-            background: linear-gradient(135deg, rgba(0, 204, 102, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
-            color: var(--green);
-        }
-        
-        .feature-2 .feature-icon {
-            background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
-            color: var(--skyblue);
-        }
-        
-        .feature-3 .feature-icon {
-            background: linear-gradient(135deg, rgba(255, 209, 102, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
-            color: var(--yellow);
-        }
-        
-        .feature-title {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: white;
-        }
-        
-        .feature-description {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            opacity: 0.9;
-            margin-bottom: 25px;
-        }
-        
-        .feature-list {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .feature-list li {
-            margin-bottom: 12px;
-            display: flex;
-            align-items: flex-start;
-        }
-        
-        .feature-list li i {
-            margin-right: 10px;
-            margin-top: 5px;
-        }
-        
-        .feature-1 .feature-list li i {
-            color: var(--green);
-        }
-        
-        .feature-2 .feature-list li i {
-            color: var(--skyblue);
-        }
-        
-        .feature-3 .feature-list li i {
-            color: var(--yellow);
-        }
-        
-        .img-placeholder {
-            width: 100%;
-            height: 300px;
-            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .img-placeholder::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(to bottom right, rgba(255,255,255,0.1), rgba(255,255,255,0));
-            transform: rotate(45deg);
-            animation: shine 3s infinite;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
-        }
-        
-        /* Step Indicator */
-        .step-indicator {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 60px;
-        }
-        
-        .step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            padding: 0 40px;
-        }
-        
-        .step-number {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            position: relative;
-            z-index: 2;
-        }
-        
-        .step-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--skyblue);
-            text-align: center;
-        }
-        
-        .step-connector {
-            position: absolute;
-            top: 30px;
-            left: -30px;
-            right: -30px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--purple), transparent);
-            z-index: 1;
-        }
-        
-        /* Testimonials */
-        .testimonials-section {
-            padding: 80px 0;
-            background: rgba(26, 26, 46, 0.5);
-        }
-        
-        .testimonial-card {
-            background: rgba(26, 26, 46, 0.6);
-            border-radius: 15px;
-            padding: 30px;
-            margin: 20px;
-            border: 1px solid rgba(138, 43, 226, 0.2);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s;
-        }
-        
-        .testimonial-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            border-color: var(--purple);
-        }
-        
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-        }
-        
-        .author-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        .author-info h4 {
-            margin-bottom: 5px;
-            color: white;
-        }
-        
-        .author-info p {
-            opacity: 0.7;
-            font-size: 0.9rem;
-        }
-        
-        /* CTA Section */
-        .cta-section {
-            padding: 80px 0;
-            text-align: center;
-            background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
-        }
-        
-        .cta-title {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, var(--green), var(--skyblue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .cta-description {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-        
-        .btn-cta {
-            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .btn-cta:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-        }
-        
-        /* Footer */
-        footer {
-            background: var(--black-color);
-            padding: 60px 0 30px;
-        }
-        
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 50px;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-        
-        .footer-col {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        .footer-col h3 {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            color: var(--skyblue);
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .footer-col h3::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 40px;
-            height: 2px;
-            background: linear-gradient(to right, var(--purple), var(--skyblue));
-        }
-        
-        .footer-links {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .footer-links li {
-            margin-bottom: 12px;
-        }
-        
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-        
-        .footer-links a:hover {
-            color: var(--yellow);
-            transform: translateX(5px);
-        }
-        
-        .footer-social {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: all 0.3s;
-        }
-        
-        .social-icon:hover {
-            background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
-            transform: translateY(-5px);
-        }
-        
-        .footer-bottom {
-            text-align: center;
-            margin-top: 50px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        /* Responsive */
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.5;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.3;
+            }
+        }
+        
+        /* Responsive Design */
         @media (max-width: 992px) {
-            .feature-row {
+            .welcome-content {
                 flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+            
+            .text-content {
                 text-align: center;
             }
             
-            .feature-row.reverse {
-                flex-direction: column;
+            .main-title {
+                font-size: 3rem;
             }
             
-            .step-indicator {
-                flex-direction: column;
-                align-items: center;
-                gap: 40px;
+            .subtitle {
+                font-size: 1.5rem;
             }
             
-            .step-connector {
-                display: none;
-            }
-            
-            .feature-icon {
-                margin-left: auto;
-                margin-right: auto;
-            }
-            
-            .feature-list li {
-                justify-content: center;
-            }
-            
-            .intro-title {
-                font-size: 2.8rem;
-            }
-            
-            .intro-subtitle {
-                font-size: 1.3rem;
-            }
-            
-            .about-content {
-                flex-direction: column;
-            }
-            
-            .about-stats {
+            .stats {
                 justify-content: center;
             }
         }
         
         @media (max-width: 768px) {
-            .logo {
+            .main-title {
                 font-size: 2.5rem;
             }
             
+            .subtitle {
+                font-size: 1.3rem;
+            }
+            
             .tagline {
-                font-size: 1.2rem;
-            }
-            
-            .section-title h2 {
-                font-size: 2rem;
-            }
-            
-            .feature-title {
-                font-size: 1.7rem;
-            }
-            
-            .cta-title {
-                font-size: 2rem;
-            }
-            
-            .intro-title {
-                font-size: 2.2rem;
-            }
-            
-            .intro-subtitle {
-                font-size: 1.1rem;
-            }
-            
-            .intro-feature {
-                max-width: 100%;
-            }
-            
-            .slide-title {
-                font-size: 1.5rem;
-            }
-            
-            .slide-desc {
                 font-size: 1rem;
             }
             
+            .stats {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .stat-item {
+                flex: 0 0 calc(50% - 20px);
+            }
+            
+            .welcome-content {
+                padding: 30px 20px;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .stat-item {
+                flex: 0 0 100%;
+            }
+            
+            .welcome-shape {
+                display: none;
+            }
+            
+            .floating-icon {
+                display: none;
+            }
+        }
+
+            /* University Slideshow - Fixed Styles */
+            .university-slideshow {
+                padding: 40px 0;
+                background: rgba(26, 26, 46, 0.5);
+            }
+
+            .slideshow-container {
+                max-width: 1200px;
+                position: relative;
+                margin: auto;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+                height: 400px;
+                /* Fixed height */
+            }
+
+            .slide {
+                display: none;
+                position: relative;
+                height: 100%;
+            }
+
+            .slide-img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: brightness(0.7);
+            }
+
+            .slide-content {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 30px;
+                background: linear-gradient(to top, rgba(15, 15, 19, 0.9), transparent);
+            }
+
+            .slide-title {
+                font-size: 2rem;
+                margin-bottom: 10px;
+                color: white;
+            }
+
+            .slide-desc {
+                font-size: 1.1rem;
+                opacity: 0.9;
+                max-width: 600px;
+            }
+
+            .slide-dots {
+                text-align: center;
+                padding: 20px 0;
+            }
+
+            .dot {
+                cursor: pointer;
+                height: 12px;
+                width: 12px;
+                margin: 0 5px;
+                background-color: rgba(255, 255, 255, 0.3);
+                border-radius: 50%;
+                display: inline-block;
+                transition: background-color 0.3s;
+            }
+
+            .active-dot,
+            .dot:hover {
+                background-color: var(--purple);
+            }
+
+            /* Fade animation for slides */
+            .fade {
+                animation-name: fade;
+                animation-duration: 1.5s;
+            }
+
+            @keyframes fade {
+                from {
+                    opacity: .4
+                }
+
+                to {
+                    opacity: 1
+                }
+            }
+
+            /* Rest of your CSS remains unchanged */
+            :root {
+                --black-color: #0f0f13;
+                --dark-blue: #1a1a2e;
+                --purple: #8a2be2;
+                --skyblue: #00b4d8;
+                --green: #00cc66;
+                --yellow: #ffd166;
+                --light-color: #f8f9fc;
+                --accent-color: #6a4c93;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Poppins', sans-serif;
+                background: linear-gradient(135deg, var(--black-color) 0%, var(--dark-blue) 100%);
+                color: white;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6 {
+                font-family: 'Playfair Display', serif;
+            }
+
+            /* Navigation */
+            .navbar {
+                background: rgba(15, 15, 19, 0.9);
+                backdrop-filter: blur(10px);
+                padding: 15px 0;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+            }
+
+            .navbar-brand {
+                font-family: 'Playfair Display', serif;
+                font-weight: 700;
+                font-size: 1.8rem;
+                color: white !important;
+            }
+
+            .navbar-brand span {
+                background: linear-gradient(to right, var(--purple), var(--skyblue));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .nav-link {
+                color: rgba(255, 255, 255, 0.8) !important;
+                font-weight: 500;
+                margin: 0 10px;
+                transition: all 0.3s;
+                position: relative;
+            }
+
+            .nav-link:hover {
+                color: var(--yellow) !important;
+            }
+
+            .nav-link::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(to right, var(--purple), var(--skyblue));
+                transition: width 0.3s;
+            }
+
+            .nav-link:hover::after {
+                width: 100%;
+            }
+
+            .btn-nav {
+                background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
+                color: white;
+                border: none;
+                border-radius: 50px;
+                padding: 8px 20px;
+                font-weight: 600;
+                transition: all 0.3s;
+            }
+
+            .btn-nav:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Introduction Section */
+            .intro-section {
+                padding: 100px 0 80px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .intro-content {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .intro-heading {
+                text-align: center;
+                margin-bottom: 50px;
+            }
+
+            .intro-title {
+                font-size: 3.5rem;
+                margin-bottom: 20px;
+                background: linear-gradient(to right, var(--green), var(--skyblue), var(--purple));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .intro-subtitle {
+                font-size: 1.5rem;
+                opacity: 0.9;
+                max-width: 800px;
+                margin: 0 auto;
+                line-height: 1.6;
+            }
+
+            .intro-features {
+                display: flex;
+                justify-content: center;
+                gap: 30px;
+                flex-wrap: wrap;
+                margin-top: 60px;
+            }
+
+            .intro-feature {
+                background: rgba(26, 26, 46, 0.6);
+                border-radius: 15px;
+                padding: 30px;
+                width: 100%;
+                max-width: 350px;
+                text-align: center;
+                transition: all 0.3s;
+                border: 1px solid rgba(138, 43, 226, 0.2);
+                backdrop-filter: blur(10px);
+            }
+
+            .intro-feature:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+                border-color: var(--purple);
+            }
+
+            .intro-feature-icon {
+                font-size: 3rem;
+                margin-bottom: 20px;
+                display: inline-block;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 20px;
+            }
+
+            .feature-1 .intro-feature-icon {
+                background: linear-gradient(135deg, rgba(0, 204, 102, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
+                color: var(--green);
+            }
+
+            .feature-2 .intro-feature-icon {
+                background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
+                color: var(--skyblue);
+            }
+
+            .feature-3 .intro-feature-icon {
+                background: linear-gradient(135deg, rgba(255, 209, 102, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
+                color: var(--yellow);
+            }
+
+            .intro-feature-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+                color: white;
+            }
+
+            .intro-feature-description {
+                opacity: 0.8;
+                line-height: 1.6;
+            }
+
+            .intro-cta {
+                text-align: center;
+                margin-top: 60px;
+            }
+
+            .btn-intro {
+                background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
+                color: white;
+                border: none;
+                border-radius: 50px;
+                padding: 15px 40px;
+                font-size: 1.2rem;
+                font-weight: 600;
+                transition: all 0.3s;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-intro:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            }
+
+            .btn-intro::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: all 0.5s;
+            }
+
+            .btn-intro:hover::before {
+                left: 100%;
+            }
+
+            /* Animated background elements */
+            .intro-shape {
+                position: absolute;
+                z-index: 1;
+            }
+
+            .shape-1 {
+                top: 100px;
+                left: 5%;
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--green), transparent);
+                opacity: 0.3;
+                animation: float 8s ease-in-out infinite;
+            }
+
+            .shape-2 {
+                top: 300px;
+                right: 10%;
+                width: 150px;
+                height: 150px;
+                border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+                background: linear-gradient(135deg, var(--skyblue), transparent);
+                opacity: 0.2;
+                animation: float 10s ease-in-out infinite;
+            }
+
+            .shape-3 {
+                bottom: 200px;
+                left: 15%;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: linear-gradient(135deg, var(--purple), transparent);
+                opacity: 0.2;
+                animation: float 7s ease-in-out infinite;
+            }
+
+            @keyframes float {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+
+                50% {
+                    transform: translateY(-20px) rotate(10deg);
+                }
+
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+
+            /* About Section */
+            .about-section {
+                padding: 80px 0;
+                background: rgba(26, 26, 46, 0.5);
+            }
+
+            .about-content {
+                display: flex;
+                align-items: center;
+                gap: 50px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            .about-text {
+                flex: 1;
+            }
+
+            .about-image {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+            }
+
+            .about-title {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+                background: linear-gradient(to right, var(--green), var(--skyblue));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .about-description {
+                font-size: 1.1rem;
+                line-height: 1.6;
+                margin-bottom: 30px;
+                opacity: 0.9;
+            }
+
+            .about-stats {
+                display: flex;
+                gap: 30px;
+                margin-top: 40px;
+            }
+
+            .stat {
+                text-align: center;
+            }
+
+            .stat-number {
+                font-size: 2.5rem;
+                font-weight: 700;
+                background: linear-gradient(to right, var(--yellow), var(--green));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 10px;
+            }
+
+            .stat-label {
+                font-size: 1rem;
+                opacity: 0.8;
+            }
+
+            .about-img {
+                width: 100%;
+                max-width: 400px;
+                border-radius: 15px;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            /* Features Section */
+            .features-section {
+                padding: 60px 0;
+                position: relative;
+            }
+
+            .section-title {
+                text-align: center;
+                margin-bottom: 60px;
+            }
+
+            .section-title h2 {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+                background: linear-gradient(to right, var(--purple), var(--skyblue));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                position: relative;
+                display: inline-block;
+            }
+
+            .section-title h2::after {
+                content: '';
+                position: absolute;
+                bottom: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 3px;
+                background: linear-gradient(90deg, var(--purple), var(--skyblue));
+            }
+
+            .section-title p {
+                font-size: 1.2rem;
+                opacity: 0.8;
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            /* Features Layout */
+            .features-container {
+                display: flex;
+                flex-direction: column;
+                gap: 80px;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            .feature-row {
+                display: flex;
+                align-items: center;
+                gap: 50px;
+            }
+
+            .feature-row.reverse {
+                flex-direction: row-reverse;
+            }
+
+            .feature-content {
+                flex: 1;
+            }
+
+            .feature-image {
+                flex: 1;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .feature-icon {
+                font-size: 4rem;
+                margin-bottom: 20px;
+                display: inline-block;
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            }
+
+            .feature-1 .feature-icon {
+                background: linear-gradient(135deg, rgba(0, 204, 102, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
+                color: var(--green);
+            }
+
+            .feature-2 .feature-icon {
+                background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
+                color: var(--skyblue);
+            }
+
+            .feature-3 .feature-icon {
+                background: linear-gradient(135deg, rgba(255, 209, 102, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
+                color: var(--yellow);
+            }
+
+            .feature-title {
+                font-size: 2rem;
+                margin-bottom: 20px;
+                color: white;
+            }
+
+            .feature-description {
+                font-size: 1.1rem;
+                line-height: 1.6;
+                opacity: 0.9;
+                margin-bottom: 25px;
+            }
+
+            .feature-list {
+                list-style: none;
+                padding: 0;
+            }
+
+            .feature-list li {
+                margin-bottom: 12px;
+                display: flex;
+                align-items: flex-start;
+            }
+
+            .feature-list li i {
+                margin-right: 10px;
+                margin-top: 5px;
+            }
+
+            .feature-1 .feature-list li i {
+                color: var(--green);
+            }
+
+            .feature-2 .feature-list li i {
+                color: var(--skyblue);
+            }
+
+            .feature-3 .feature-list li i {
+                color: var(--yellow);
+            }
+
+            .img-placeholder {
+                width: 100%;
+                height: 300px;
+                background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
+                border-radius: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-size: 1.5rem;
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .img-placeholder::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+                transform: rotate(45deg);
+                animation: shine 3s infinite;
+            }
+
+            @keyframes shine {
+                0% {
+                    transform: translateX(-100%) rotate(45deg);
+                }
+
+                100% {
+                    transform: translateX(100%) rotate(45deg);
+                }
+            }
+
+            /* Step Indicator */
+            .step-indicator {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 60px;
+            }
+
+            .step {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: relative;
+                padding: 0 40px;
+            }
+
+            .step-number {
+                width: 60px;
+                height: 60px;
+                background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
+                color: white;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin-bottom: 15px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+                position: relative;
+                z-index: 2;
+            }
+
+            .step-title {
+                font-size: 1.2rem;
+                font-weight: 600;
+                color: var(--skyblue);
+                text-align: center;
+            }
+
+            .step-connector {
+                position: absolute;
+                top: 30px;
+                left: -30px;
+                right: -30px;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, var(--purple), transparent);
+                z-index: 1;
+            }
+
+            /* Testimonials */
+            .testimonials-section {
+                padding: 80px 0;
+                background: rgba(26, 26, 46, 0.5);
+            }
+
+            .testimonial-card {
+                background: rgba(26, 26, 46, 0.6);
+                border-radius: 15px;
+                padding: 30px;
+                margin: 20px;
+                border: 1px solid rgba(138, 43, 226, 0.2);
+                backdrop-filter: blur(10px);
+                transition: all 0.3s;
+            }
+
+            .testimonial-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+                border-color: var(--purple);
+            }
+
+            .testimonial-text {
+                font-style: italic;
+                margin-bottom: 20px;
+                line-height: 1.6;
+            }
+
+            .testimonial-author {
+                display: flex;
+                align-items: center;
+            }
+
+            .author-img {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                margin-right: 15px;
+                background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+            }
+
+            .author-info h4 {
+                margin-bottom: 5px;
+                color: white;
+            }
+
+            .author-info p {
+                opacity: 0.7;
+                font-size: 0.9rem;
+            }
+
+            /* CTA Section */
+            .cta-section {
+                padding: 80px 0;
+                text-align: center;
+                background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(0, 180, 216, 0.1) 100%);
+            }
+
+            .cta-title {
+                font-size: 2.5rem;
+                margin-bottom: 20px;
+                background: linear-gradient(to right, var(--green), var(--skyblue));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .cta-description {
+                font-size: 1.2rem;
+                opacity: 0.9;
+                max-width: 600px;
+                margin: 0 auto 40px;
+            }
+
+            .btn-cta {
+                background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
+                color: white;
+                border: none;
+                border-radius: 50px;
+                padding: 15px 40px;
+                font-size: 1.2rem;
+                font-weight: 600;
+                transition: all 0.3s;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            }
+
+            .btn-cta:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            }
+
+            /* Footer */
+            footer {
+                background: var(--black-color);
+                padding: 60px 0 30px;
+            }
+
+            .footer-content {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 50px;
+                justify-content: space-between;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
             .footer-col {
-                min-width: 100%;
+                flex: 1;
+                min-width: 200px;
             }
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .feature-content, .feature-image {
-            animation: fadeIn 1s ease-out;
-        }
-        
-        .feature-row:nth-child(1) .feature-content,
-        .feature-row:nth-child(1) .feature-image {
-            animation-delay: 0.2s;
-        }
-        
-        .feature-row:nth-child(2) .feature-content,
-        .feature-row:nth-child(2) .feature-image {
-            animation-delay: 0.4s;
-        }
-        
-        .feature-row:nth-child(3) .feature-content,
-        .feature-row:nth-child(3) .feature-image {
-            animation-delay: 0.6s;
-        }
-        
-        .intro-feature {
-            animation: fadeIn 1s ease-out;
-        }
-        
-        .intro-feature:nth-child(1) {
-            animation-delay: 0.2s;
-        }
-        
-        .intro-feature:nth-child(2) {
-            animation-delay: 0.4s;
-        }
-        
-        .intro-feature:nth-child(3) {
-            animation-delay: 0.6s;
-        }
-    </style>
-</head>
-<body>
-    <section class="welcome-section">
-        <div class="intro-heading">
-            <h1 class="intro-title">University Selector</h1>
-        </div>
-    </section>
 
-    <!-- University Slideshow -->
-    <section class="university-slideshow">
-        <div class="slideshow-container">
-            <!-- Slide 1 -->
-            <div class="slide active">
-                <img src="images/harvard-university.png" alt="Harvard University" class="slide-img">
-                <div class="slide-content">
-                    <h2 class="slide-title">Harvard University</h2>
-                    <p class="slide-desc">One of the world's most prestigious universities, known for excellence in education and research.</p>
-                </div>
-            </div>
-            
-            <!-- Slide 2 -->
-            <div class="slide">
-                <img src="images/stanford-university.png" alt="Stanford University" class="slide-img">
-                <div class="slide-content">
-                    <h2 class="slide-title">Stanford University</h2>
-                    <p class="slide-desc">A leading research institution located in the heart of Silicon Valley, fostering innovation.</p>
-                </div>
-            </div>
-            
-            <!-- Slide 3 -->
-            <div class="slide">
-                <img src="images/cambridge-university.png" alt="Cambridge University" class="slide-img">
-                <div class="slide-content">
-                    <h2 class="slide-title">Cambridge University</h2>
-                    <p class="slide-desc">One of the world's oldest universities, renowned for its academic excellence and rich history.</p>
-                </div>
-            </div>
-        </div>
-        
-        <div class="slide-dots">
-            <span class="dot active" data-slide="0"></span>
-            <span class="dot" data-slide="1"></span>
-            <span class="dot" data-slide="2"></span>
-        </div>
-    </section>
+            .footer-col h3 {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+                color: var(--skyblue);
+                position: relative;
+                padding-bottom: 10px;
+            }
 
-    <!-- Introduction Section -->
-    <section class="intro-section">
-        <!-- Animated background shapes -->
-        <div class="intro-shape shape-1"></div>
-        <div class="intro-shape shape-2"></div>
-        <div class="intro-shape shape-3"></div>
-        
-        <div class="intro-content">
-            <div class="intro-heading">
-                <h1 class="intro-title">Find Your Perfect University Match</h1>
-                <p class="intro-subtitle">UniSelector is an intelligent platform designed to help students make informed decisions about their academic future with confidence and clarity.</p>
+            .footer-col h3::after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 40px;
+                height: 2px;
+                background: linear-gradient(to right, var(--purple), var(--skyblue));
+            }
+
+            .footer-links {
+                list-style: none;
+                padding: 0;
+            }
+
+            .footer-links li {
+                margin-bottom: 12px;
+            }
+
+            .footer-links a {
+                color: rgba(255, 255, 255, 0.7);
+                text-decoration: none;
+                transition: all 0.3s;
+                display: inline-block;
+            }
+
+            .footer-links a:hover {
+                color: var(--yellow);
+                transform: translateX(5px);
+            }
+
+            .footer-social {
+                display: flex;
+                gap: 15px;
+                margin-top: 20px;
+            }
+
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                transition: all 0.3s;
+            }
+
+            .social-icon:hover {
+                background: linear-gradient(135deg, var(--purple) 0%, var(--skyblue) 100%);
+                transform: translateY(-5px);
+            }
+
+            .footer-bottom {
+                text-align: center;
+                margin-top: 50px;
+                padding-top: 20px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            /* Responsive */
+            @media (max-width: 992px) {
+                .feature-row {
+                    flex-direction: column;
+                    text-align: center;
+                }
+
+                .feature-row.reverse {
+                    flex-direction: column;
+                }
+
+                .step-indicator {
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 40px;
+                }
+
+                .step-connector {
+                    display: none;
+                }
+
+                .feature-icon {
+                    margin-left: auto;
+                    margin-right: auto;
+                }
+
+                .feature-list li {
+                    justify-content: center;
+                }
+
+                .intro-title {
+                    font-size: 2.8rem;
+                }
+
+                .intro-subtitle {
+                    font-size: 1.3rem;
+                }
+
+                .about-content {
+                    flex-direction: column;
+                }
+
+                .about-stats {
+                    justify-content: center;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .logo {
+                    font-size: 2.5rem;
+                }
+
+                .tagline {
+                    font-size: 1.2rem;
+                }
+
+                .section-title h2 {
+                    font-size: 2rem;
+                }
+
+                .feature-title {
+                    font-size: 1.7rem;
+                }
+
+                .cta-title {
+                    font-size: 2rem;
+                }
+
+                .intro-title {
+                    font-size: 2.2rem;
+                }
+
+                .intro-subtitle {
+                    font-size: 1.1rem;
+                }
+
+                .intro-feature {
+                    max-width: 100%;
+                }
+
+                .slide-title {
+                    font-size: 1.5rem;
+                }
+
+                .slide-desc {
+                    font-size: 1rem;
+                }
+
+                .footer-col {
+                    min-width: 100%;
+                }
+            }
+
+            /* Animations */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .feature-content,
+            .feature-image {
+                animation: fadeIn 1s ease-out;
+            }
+
+            .feature-row:nth-child(1) .feature-content,
+            .feature-row:nth-child(1) .feature-image {
+                animation-delay: 0.2s;
+            }
+
+            .feature-row:nth-child(2) .feature-content,
+            .feature-row:nth-child(2) .feature-image {
+                animation-delay: 0.4s;
+            }
+
+            .feature-row:nth-child(3) .feature-content,
+            .feature-row:nth-child(3) .feature-image {
+                animation-delay: 0.6s;
+            }
+
+            .intro-feature {
+                animation: fadeIn 1s ease-out;
+            }
+
+            .intro-feature:nth-child(1) {
+                animation-delay: 0.2s;
+            }
+
+            .intro-feature:nth-child(2) {
+                animation-delay: 0.4s;
+            }
+
+            .intro-feature:nth-child(3) {
+                animation-delay: 0.6s;
+            }
+
+        </style>
+    </head>
+
+    <body>
+        <!-- Main Containor -->
+       <div class="container">
+        <section class="welcome-section">
+            <!-- Animated background elements -->
+            <div class="welcome-shape shape-1"></div>
+            <div class="welcome-shape shape-2"></div>
+            <div class="welcome-shape shape-3"></div>
+            
+            <!-- Floating icons -->
+            <div class="floating-icon icon-1">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="floating-icon icon-2">
+                <i class="fas fa-book-open"></i>
+            </div>
+            <div class="floating-icon icon-3">
+                <i class="fas fa-degree-cap"></i>
             </div>
             
-            <div class="intro-features">
-                <div class="intro-feature feature-1">
-                    <div class="intro-feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3 class="intro-feature-title">Intelligent Matching</h3>
-                    <p class="intro-feature-description">Our advanced algorithm analyzes your unique profile to find universities that perfectly match your academic goals and personal preferences.</p>
+            <div class="welcome-content">
+                <div class="logo-container">
+                    <img src="images/Uni-logo.png" alt="University Selector Logo" class="logo-image">
                 </div>
                 
-                <div class="intro-feature feature-2">
-                    <div class="intro-feature-icon">
-                        <i class="fas fa-road"></i>
-                    </div>
-                    <h3 class="intro-feature-title">Personalized Journey</h3>
-                    <p class="intro-feature-description">From exploration to application, we guide you through every step of your university selection process with personalized recommendations.</p>
-                </div>
-                
-                <div class="intro-feature feature-3">
-                    <div class="intro-feature-icon">
-                        <i class="fas fa-graduation-cap"></i>
-                    </div>
-                    <h3 class="intro-feature-title">Informed Decisions</h3>
-                    <p class="intro-feature-description">Compare programs, evaluate your chances, and make data-driven decisions about your educational future with comprehensive insights.</p>
-                </div>
-            </div>
-            
-            <div class="cta-section">
-                <div class="container"> 
-                    <a href="sign-in.html" class="btn btn-cta">Get Started Now</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section class="about-section">
-        <div class="about-content">
-            <div class="about-text">
-                <h2 class="about-title">About UniSelector</h2>
-                <p class="about-description">
-                    UniSelector was founded with a simple mission: to simplify the complex process of university selection. 
-                    We understand that choosing the right university is one of the most important decisions in a student's life, 
-                    and our platform is designed to make that process easier, more transparent, and more successful.
-                </p>
-                <p class="about-description">
-                    Our team of education experts, data scientists, and designers have created a powerful platform that 
-                    matches students with universities based on their academic profile, preferences, and career aspirations. 
-                    We've helped thousands of students find their perfect educational path.
-                </p>
-                
-                <div class="about-stats">
-                    <div class="stat">
-                        <div class="stat-number">50,000+</div>
-                        <div class="stat-label">Students Helped</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">2,500+</div>
-                        <div class="stat-label">Universities</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-number">95%</div>
-                        <div class="stat-label">Satisfaction Rate</div>
-                    </div>
-                </div>
-            </div>
-            <div class="about-image">
-                <div class="about-img">
-                    <div class="img-placeholder">
-                        <i class="fas fa-university"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features-section">
-        <div class="container">
-            <div class="section-title">
-                <h2>How UniSelector Works</h2>
-                <p>Our systematic approach helps you find the perfect university match in three simple steps</p>
-            </div>
-            
-            <!-- Step Indicator -->
-            <div class="step-indicator">
-                <div class="step">
-                    <div class="step-number">1</div>
-                    <div class="step-connector"></div>
-                    <div class="step-title">Personalized Matching</div>
-                </div>
-                <div class="step">
-                    <div class="step-number">2</div>
-                    <div class="step-connector"></div>
-                    <div class="step-title">Smart Recommendations</div>
-                </div>
-                <div class="step">
-                    <div class="step-number">3</div>
-                    <div class="step-title">Save & Compare</div>
-                </div>
-            </div>
-            
-            <!-- Features Container -->
-            <div class="features-container">
-                <!-- Feature 1: Personalized Matching -->
-                <div class="feature-row feature-1">
-                    <div class="feature-content">
-                        <div class="feature-icon">
-                            <i class="fas fa-clipboard-list"></i>
+                <div class="text-content">
+                    <h1 class="main-title">Welcome to UniSelector</h1>
+                    <p class="subtitle">Discover Your Perfect Academic Journey</p>
+                    <p class="tagline">Find the ideal university that matches your aspirations, skills, and dreams with our intelligent matching platform.</p>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <div class="stat-number">100</div>
+                            <div class="stat-label">Universities</div>
                         </div>
-                        <h3 class="feature-title">Personalized Matching</h3>
-                        <p class="feature-description">
-                            Begin your journey by answering our tailored questionnaire that assesses your interests, strengths, and career aspirations.
-                        </p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i> Comprehensive assessment of your academic profile</li>
-                            <li><i class="fas fa-check-circle"></i> Identification of your preferences and priorities</li>
-                            <li><i class="fas fa-check-circle"></i> Analysis of your career goals and aspirations</li>
-                            <li><i class="fas fa-check-circle"></i> Understanding your preferred learning environment</li>
-                        </ul>
-                    </div>
-                    <div class="feature-image">
-                        <div class="img-placeholder">
-                            <i class="fas fa-user-graduate"></i>
+                        <div class="stat-item">
+                            <div class="stat-number">50+</div>
+                            <div class="stat-label">Students Helped</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">95%</div>
+                            <div class="stat-label">Success Rate</div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Feature 2: Smart Recommendations -->
-                <div class="feature-row reverse feature-2">
-                    <div class="feature-content">
-                        <div class="feature-icon">
+            </div>
+        </section>
+    </div>
+
+        <!-- University Slideshow -->
+        <section class="university-slideshow">
+            <div class="slideshow-container">
+                <!-- Slide 1 -->
+                <div class="slide active">
+                    <img src="images/harvard-university.png" alt="Harvard University" class="slide-img">
+                    <div class="slide-content">
+                        <h2 class="slide-title">Harvard University</h2>
+                        <p class="slide-desc">One of the world's most prestigious universities, known for excellence in
+                            education and research.</p>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="slide">
+                    <img src="images/stanford-university.png" alt="Stanford University" class="slide-img">
+                    <div class="slide-content">
+                        <h2 class="slide-title">Stanford University</h2>
+                        <p class="slide-desc">A leading research institution located in the heart of Silicon Valley,
+                            fostering innovation.</p>
+                    </div>
+                </div>
+
+                <!-- Slide 3 -->
+                <div class="slide">
+                    <img src="images/cambridge-university.png" alt="Cambridge University" class="slide-img">
+                    <div class="slide-content">
+                        <h2 class="slide-title">Cambridge University</h2>
+                        <p class="slide-desc">One of the world's oldest universities, renowned for its academic
+                            excellence and rich history.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slide-dots">
+                <span class="dot active" data-slide="0"></span>
+                <span class="dot" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
+            </div>
+        </section>
+
+        <!-- Introduction Section -->
+        <section class="intro-section">
+            <!-- Animated background shapes -->
+            <div class="intro-shape shape-1"></div>
+            <div class="intro-shape shape-2"></div>
+            <div class="intro-shape shape-3"></div>
+
+            <div class="intro-content">
+                <div class="intro-heading">
+                    <h1 class="intro-title">Find Your Perfect University Match</h1>
+                    <p class="intro-subtitle">UniSelector is an intelligent platform designed to help students make
+                        informed decisions about their academic future with confidence and clarity.</p>
+                </div>
+
+                <div class="intro-features">
+                    <div class="intro-feature feature-1">
+                        <div class="intro-feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="intro-feature-title">Intelligent Matching</h3>
+                        <p class="intro-feature-description">Our advanced algorithm analyzes your unique profile to find
+                            universities that perfectly match your academic goals and personal preferences.</p>
+                    </div>
+
+                    <div class="intro-feature feature-2">
+                        <div class="intro-feature-icon">
+                            <i class="fas fa-road"></i>
+                        </div>
+                        <h3 class="intro-feature-title">Personalized Journey</h3>
+                        <p class="intro-feature-description">From exploration to application, we guide you through every
+                            step of your university selection process with personalized recommendations.</p>
+                    </div>
+
+                    <div class="intro-feature feature-3">
+                        <div class="intro-feature-icon">
                             <i class="fas fa-graduation-cap"></i>
                         </div>
-                        <h3 class="feature-title">Smart Recommendations</h3>
-                        <p class="feature-description">
-                            Receive personalized university recommendations based on your unique profile and preferences.
-                        </p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i> Curated list of universities matching your profile</li>
-                            <li><i class="fas fa-check-circle"></i> Detailed information about each recommended university</li>
-                            <li><i class="fas fa-check-circle"></i> Admission probability based on your academic background</li>
-                            <li><i class="fas fa-check-circle"></i> Program suggestions aligned with your career goals</li>
-                        </ul>
-                    </div>
-                    <div class="feature-image">
-                        <div class="img-placeholder">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
+                        <h3 class="intro-feature-title">Informed Decisions</h3>
+                        <p class="intro-feature-description">Compare programs, evaluate your chances, and make
+                            data-driven decisions about your educational future with comprehensive insights.</p>
                     </div>
                 </div>
-                
-                <!-- Feature 3: Save & Compare -->
-                <div class="feature-row feature-3">
-                    <div class="feature-content">
-                        <div class="feature-icon">
-                            <i class="fas fa-bookmark"></i>
-                        </div>
-                        <h3 class="feature-title">Save & Compare</h3>
-                        <p class="feature-description">
-                            Organize your options, compare universities side-by-side, and make informed decisions.
-                        </p>
-                        <ul class="feature-list">
-                            <li><i class="fas fa-check-circle"></i> Save your favorite universities for easy access</li>
-                            <li><i class="fas fa-check-circle"></i> Compare multiple institutions side-by-side</li>
-                            <li><i class="fas fa-check-circle"></i> Track application deadlines and requirements</li>
-                            <li><i class="fas fa-check-circle"></i> Share your shortlist with mentors and family</li>
-                        </ul>
-                    </div>
-                    <div class="feature-image">
-                        <div class="img-placeholder">
-                            <i class="fas fa-balance-scale"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Testimonials Section -->
-    <section class="testimonials-section">
-        <div class="container">
-            <div class="section-title">
-                <h2>What Students Say</h2>
-                <p>Hear from students who found their perfect university match with UniSelector</p>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text">
-                            "UniSelector made the overwhelming process of university applications so much easier. 
-                            I found my perfect match and couldn't be happier with my choice!"
-                        </p>
-                        <div class="testimonial-author">
-                            <div class="author-img">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="author-info">
-                                <h4>Sarah Johnson</h4>
-                                <p>Stanford University</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text">
-                            "The personalized recommendations were spot on! I would have never considered some of 
-                            the universities that ended up being perfect for me."
-                        </p>
-                        <div class="testimonial-author">
-                            <div class="author-img">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="author-info">
-                                <h4>Michael Chen</h4>
-                                <p>MIT Computer Science</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="testimonial-card">
-                        <p class="testimonial-text">
-                            "The comparison tool helped me evaluate my options objectively. 
-                            I felt confident in my decision thanks to UniSelector's comprehensive insights."
-                        </p>
-                        <div class="testimonial-author">
-                            <div class="author-img">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="author-info">
-                                <h4>Jessica Williams</h4>
-                                <p>Harvard Law School</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- CTA Section -->
-    <section class="cta-section">
-        <div class="container">
-            <h2 class="cta-title">Ready to Find Your Perfect University Match?</h2>
-            <p class="cta-description">Join thousands of students who have discovered their ideal educational path with UniSelector</p>
-            <a href="sign-in.html" class="btn btn-cta">Sign up</a>
-        </div>
-    </section>
-    
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-col">
-                <h3>UniSelector</h3>
-                <p>Your personalized university guide helping students find their perfect academic match since 2018.</p>
-                <div class="footer-social">
-                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-col">
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#about-section">About Us</a></li>
-                    <li><a href="#features-section">Working</a></li>
-                    <li><a href="#testimonials-section">Testimonials</a></li>
-                    <li><a href="#cta-section">Create Account</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h3>Resources</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Blog</a></li>
-                    <li><a href="#">Admission Guide</a></li>
-                    <li><a href="#">Scholarships</a></li>
-                    <li><a href="#">Application Tips</a></li>
-                    <li><a href="#">FAQ</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h3>Contact Us</h3>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-map-marker-alt me-2"></i> 52/8, Newa, Sainik Colony, Prayagraj, UP</a></li>
-                    <li><a href="#"><i class="fas fa-phone me-2"></i> +91 9935806722</a></li>
-                    <li><a href="#"><i class="fas fa-envelope me-2"></i> uniselector@2023.edu.in</a></li>
-                    <li><a href="#"><i class="fas fa-clock me-2"></i> Mon-Fri: 9AM - 5PM</a></li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2023 UniSelector. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-        </div>
-    </footer>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Slideshow functionality - Fixed
-        let slideIndex = 0;
-        showSlides(slideIndex);
-        
-        function currentSlide(n) {
-            showSlides(slideIndex = n - 1);
-        }
-        
-        function showSlides(n) {
-            let i;
-            let slides = document.getElementsByClassName("slide");
-            let dots = document.getElementsByClassName("dot");
-            
-            if (n >= slides.length) {slideIndex = 0}
-            if (n < 0) {slideIndex = slides.length - 1}
-            
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
-            }
-            
-            for (i = 0; i < dots.length; i++) {
-                dots[i].className = dots[i].className.replace(" active-dot", "");
-            }
-            
-            slides[slideIndex].style.display = "block";
-            dots[slideIndex].className += " active-dot";
-        }
-        
-        // Auto advance slides
-        setInterval(function() {
-            slideIndex++;
+                <div class="cta-section">
+                    <div class="container">
+                        <a href="sign-in.html" class="btn btn-cta">Get Started Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="about-title">About UniSelector</h2>
+                    <p class="about-description">
+                        UniSelector was founded with a simple mission: to simplify the complex process of university
+                        selection.
+                        We understand that choosing the right university is one of the most important decisions in a
+                        student's life,
+                        and our platform is designed to make that process easier, more transparent, and more successful.
+                    </p>
+                    <p class="about-description">
+                        Our team of education experts, data scientists, and designers have created a powerful platform
+                        that
+                        matches students with universities based on their academic profile, preferences, and career
+                        aspirations.
+                        We've helped thousands of students find their perfect educational path.
+                    </p>
+
+                    <div class="about-stats">
+                        <div class="stat">
+                            <div class="stat-number">50,000+</div>
+                            <div class="stat-label">Students Helped</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">2,500+</div>
+                            <div class="stat-label">Universities</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number">95%</div>
+                            <div class="stat-label">Satisfaction Rate</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <div class="about-img">
+                        <div class="img-placeholder">
+                            <i class="fas fa-university"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>How UniSelector Works</h2>
+                    <p>Our systematic approach helps you find the perfect university match in three simple steps</p>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="step-indicator">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-connector"></div>
+                        <div class="step-title">Personalized Matching</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-connector"></div>
+                        <div class="step-title">Smart Recommendations</div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Save & Compare</div>
+                    </div>
+                </div>
+
+                <!-- Features Container -->
+                <div class="features-container">
+                    <!-- Feature 1: Personalized Matching -->
+                    <div class="feature-row feature-1">
+                        <div class="feature-content">
+                            <div class="feature-icon">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <h3 class="feature-title">Personalized Matching</h3>
+                            <p class="feature-description">
+                                Begin your journey by answering our tailored questionnaire that assesses your interests,
+                                strengths, and career aspirations.
+                            </p>
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check-circle"></i> Comprehensive assessment of your academic
+                                    profile</li>
+                                <li><i class="fas fa-check-circle"></i> Identification of your preferences and
+                                    priorities</li>
+                                <li><i class="fas fa-check-circle"></i> Analysis of your career goals and aspirations
+                                </li>
+                                <li><i class="fas fa-check-circle"></i> Understanding your preferred learning
+                                    environment</li>
+                            </ul>
+                        </div>
+                        <div class="feature-image">
+                            <div class="img-placeholder">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature 2: Smart Recommendations -->
+                    <div class="feature-row reverse feature-2">
+                        <div class="feature-content">
+                            <div class="feature-icon">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <h3 class="feature-title">Smart Recommendations</h3>
+                            <p class="feature-description">
+                                Receive personalized university recommendations based on your unique profile and
+                                preferences.
+                            </p>
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check-circle"></i> Curated list of universities matching your
+                                    profile</li>
+                                <li><i class="fas fa-check-circle"></i> Detailed information about each recommended
+                                    university</li>
+                                <li><i class="fas fa-check-circle"></i> Admission probability based on your academic
+                                    background</li>
+                                <li><i class="fas fa-check-circle"></i> Program suggestions aligned with your career
+                                    goals</li>
+                            </ul>
+                        </div>
+                        <div class="feature-image">
+                            <div class="img-placeholder">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature 3: Save & Compare -->
+                    <div class="feature-row feature-3">
+                        <div class="feature-content">
+                            <div class="feature-icon">
+                                <i class="fas fa-bookmark"></i>
+                            </div>
+                            <h3 class="feature-title">Save & Compare</h3>
+                            <p class="feature-description">
+                                Organize your options, compare universities side-by-side, and make informed decisions.
+                            </p>
+                            <ul class="feature-list">
+                                <li><i class="fas fa-check-circle"></i> Save your favorite universities for easy access
+                                </li>
+                                <li><i class="fas fa-check-circle"></i> Compare multiple institutions side-by-side</li>
+                                <li><i class="fas fa-check-circle"></i> Track application deadlines and requirements
+                                </li>
+                                <li><i class="fas fa-check-circle"></i> Share your shortlist with mentors and family
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="feature-image">
+                            <div class="img-placeholder">
+                                <i class="fas fa-balance-scale"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>What Students Say</h2>
+                    <p>Hear from students who found their perfect university match with UniSelector</p>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="testimonial-card">
+                            <p class="testimonial-text">
+                                "UniSelector made the overwhelming process of university applications so much easier.
+                                I found my perfect match and couldn't be happier with my choice!"
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-img">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Sarah Johnson</h4>
+                                    <p>Stanford University</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="testimonial-card">
+                            <p class="testimonial-text">
+                                "The personalized recommendations were spot on! I would have never considered some of
+                                the universities that ended up being perfect for me."
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-img">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Michael Chen</h4>
+                                    <p>MIT Computer Science</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="testimonial-card">
+                            <p class="testimonial-text">
+                                "The comparison tool helped me evaluate my options objectively.
+                                I felt confident in my decision thanks to UniSelector's comprehensive insights."
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-img">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="author-info">
+                                    <h4>Jessica Williams</h4>
+                                    <p>Harvard Law School</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="container">
+                <h2 class="cta-title">Ready to Find Your Perfect University Match?</h2>
+                <p class="cta-description">Join thousands of students who have discovered their ideal educational path
+                    with UniSelector</p>
+                <a href="sign-in.html" class="btn btn-cta">Sign up</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-content">
+                <div class="footer-col">
+                    <h3>UniSelector</h3>
+                    <p>Your personalized university guide helping students find their perfect academic match since 2018.
+                    </p>
+                    <div class="footer-social">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#about-section">About Us</a></li>
+                        <li><a href="#features-section">Working</a></li>
+                        <li><a href="#testimonials-section">Testimonials</a></li>
+                        <li><a href="#cta-section">Create Account</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Admission Guide</a></li>
+                        <li><a href="#">Scholarships</a></li>
+                        <li><a href="#">Application Tips</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-map-marker-alt me-2"></i> 52/8, Newa, Sainik Colony, Prayagraj,
+                                UP</a></li>
+                        <li><a href="#"><i class="fas fa-phone me-2"></i> +91 9935806722</a></li>
+                        <li><a href="#"><i class="fas fa-envelope me-2"></i> uniselector@2023.edu.in</a></li>
+                        <li><a href="#"><i class="fas fa-clock me-2"></i> Mon-Fri: 9AM - 5PM</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2023 UniSelector. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of
+                        Service</a></p>
+            </div>
+        </footer>
+
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            // Slideshow functionality - Fixed
+            let slideIndex = 0;
             showSlides(slideIndex);
-        }, 5000);
-        
-        // Simple animation on scroll
-        document.addEventListener('DOMContentLoaded', function() {
-            const features = document.querySelectorAll('.feature-content, .feature-image');
-            const introFeatures = document.querySelectorAll('.intro-feature');
-            const testimonialCards = document.querySelectorAll('.testimonial-card');
-            
-            function checkScroll() {
-                features.forEach(feature => {
-                    const position = feature.getBoundingClientRect();
-                    
-                    // If feature is in viewport
-                    if(position.top < window.innerHeight - 100) {
-                        feature.style.opacity = 1;
-                        feature.style.transform = 'translateY(0)';
-                    }
-                });
-                
-                introFeatures.forEach(feature => {
-                    const position = feature.getBoundingClientRect();
-                    
-                    // If feature is in viewport
-                    if(position.top < window.innerHeight - 100) {
-                        feature.style.opacity = 1;
-                        feature.style.transform = 'translateY(0)';
-                    }
-                });
-                
-                testimonialCards.forEach(card => {
-                    const position = card.getBoundingClientRect();
-                    
-                    // If card is in viewport
-                    if(position.top < window.innerHeight - 100) {
-                        card.style.opacity = 1;
-                        card.style.transform = 'translateY(0)';
-                    }
-                });
+
+            function currentSlide(n) {
+                showSlides(slideIndex = n - 1);
             }
-            
-            // Initialize feature opacity
-            features.forEach(feature => {
-                feature.style.opacity = 0;
-                feature.style.transform = 'translateY(20px)';
-                feature.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+
+            function showSlides(n) {
+                let i;
+                let slides = document.getElementsByClassName("slide");
+                let dots = document.getElementsByClassName("dot");
+
+                if (n >= slides.length) { slideIndex = 0 }
+                if (n < 0) { slideIndex = slides.length - 1 }
+
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";
+                }
+
+                for (i = 0; i < dots.length; i++) {
+                    dots[i].className = dots[i].className.replace(" active-dot", "");
+                }
+
+                slides[slideIndex].style.display = "block";
+                dots[slideIndex].className += " active-dot";
+            }
+
+            // Auto advance slides
+            setInterval(function () {
+                slideIndex++;
+                showSlides(slideIndex);
+            }, 5000);
+
+            // Simple animation on scroll
+            document.addEventListener('DOMContentLoaded', function () {
+                const features = document.querySelectorAll('.feature-content, .feature-image');
+                const introFeatures = document.querySelectorAll('.intro-feature');
+                const testimonialCards = document.querySelectorAll('.testimonial-card');
+
+                function checkScroll() {
+                    features.forEach(feature => {
+                        const position = feature.getBoundingClientRect();
+
+                        // If feature is in viewport
+                        if (position.top < window.innerHeight - 100) {
+                            feature.style.opacity = 1;
+                            feature.style.transform = 'translateY(0)';
+                        }
+                    });
+
+                    introFeatures.forEach(feature => {
+                        const position = feature.getBoundingClientRect();
+
+                        // If feature is in viewport
+                        if (position.top < window.innerHeight - 100) {
+                            feature.style.opacity = 1;
+                            feature.style.transform = 'translateY(0)';
+                        }
+                    });
+
+                    testimonialCards.forEach(card => {
+                        const position = card.getBoundingClientRect();
+
+                        // If card is in viewport
+                        if (position.top < window.innerHeight - 100) {
+                            card.style.opacity = 1;
+                            card.style.transform = 'translateY(0)';
+                        }
+                    });
+                }
+
+                // Initialize feature opacity
+                features.forEach(feature => {
+                    feature.style.opacity = 0;
+                    feature.style.transform = 'translateY(20px)';
+                    feature.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                });
+
+                introFeatures.forEach(feature => {
+                    feature.style.opacity = 0;
+                    feature.style.transform = 'translateY(20px)';
+                    feature.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                });
+
+                testimonialCards.forEach(card => {
+                    card.style.opacity = 0;
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                });
+
+                // Check scroll on load and scroll
+                window.addEventListener('load', checkScroll);
+                window.addEventListener('scroll', checkScroll);
+
+                // Get Started button click
+                const getStartedBtn = document.querySelector('.btn-cta');
+                const beginJourneyBtn = document.querySelector('.btn-intro');
+                const navBtn = document.querySelector('.btn-nav');
+
+                navBtn.addEventListener('click', function () {
+                    alert('Getting you started...');
+                    // In a real application, this would redirect to the signup page
+                });
             });
-            
-            introFeatures.forEach(feature => {
-                feature.style.opacity = 0;
-                feature.style.transform = 'translateY(20px)';
-                feature.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            });
-            
-            testimonialCards.forEach(card => {
-                card.style.opacity = 0;
-                card.style.transform = 'translateY(20px)';
-                card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-            });
-            
-            // Check scroll on load and scroll
-            window.addEventListener('load', checkScroll);
-            window.addEventListener('scroll', checkScroll);
-            
-            // Get Started button click
-            const getStartedBtn = document.querySelector('.btn-cta');
-            const beginJourneyBtn = document.querySelector('.btn-intro');
-            const navBtn = document.querySelector('.btn-nav');
-            
-            navBtn.addEventListener('click', function() {
-                alert('Getting you started...');
-                // In a real application, this would redirect to the signup page
-            });
-        });
-    </script>
-</body>
+        </script>
+    </body>
+
 </html>
