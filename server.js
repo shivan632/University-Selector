@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const app = express();
 const port = 5000;
@@ -13,6 +14,9 @@ const JWT_SECRET = 'your-secret-key'; // Change this in production
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve static files (HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
 
 // First connect without database specified
 const config = {
@@ -158,19 +162,37 @@ const createAdminsTable = (db) => {
 const createDefaultAdmin = (db) => {
     const checkSql = 'SELECT COUNT(*) as count FROM admins';
     db.query(checkSql, async (err, results) => {
+        if (err) {
+            console.error('Error checking admin count: ', err);
+            return;
+        }
+        
         if (results[0].count === 0) {
-            const hashedPassword = await bcrypt.hash('123456', 10);
-            db.query(
-                `INSERT INTO admins (first_name, last_name, email, password) VALUES (?, ?, ?, ?)`,
-                ['Shivan', 'Mishra', 'shivrom.2020@gmail.com', hashedPassword]
-            );
+            try {
+                const hashedPassword = await bcrypt.hash('123456', 10);
+                db.query(
+                    `INSERT INTO admins (first_name, last_name, email, password) VALUES (?, ?, ?, ?)`,
+                    ['Shivan', 'Mishra', 'shivrom.2020@gmail.com', hashedPassword],
+                    (err) => {
+                        if (err) {
+                            console.error('Error creating default admin: ', err);
+                        } else {
+                            console.log('Default admin account created');
+                        }
+                    }
+                );
+            } catch (error) {
+                console.error('Error hashing password for default admin: ', error);
+            }
         }
     });
 };
 
-
 // Middleware to get database connection
 app.use((req, res, next) => {
+    if (!app.locals.db) {
+        return res.status(503).json({ error: 'Database not connected. Please try again later.' });
+    }
     req.db = app.locals.db;
     next();
 });
@@ -216,11 +238,16 @@ const authenticateAdmin = (req, res, next) => {
     });
 };
 
+// Serve the signin page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'signin.html'));
+});
+
 // Authentication Routes
 
 // Register a new user
 app.post('/auth/register', async (req, res) => {
-    const {id, first_name, last_name, email, password } = req.body;
+    const { first_name, last_name, email, password } = req.body;
     
     // Basic validation
     if (!first_name || !last_name || !email || !password) {
@@ -248,8 +275,8 @@ app.post('/auth/register', async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             
             // Insert user into database
-            const insertSql = 'INSERT INTO users (id, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?)';
-            req.db.query(insertSql, [id, first_name, last_name, email, hashedPassword], (err, results) => {
+            const insertSql = 'INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
+            req.db.query(insertSql, [first_name, last_name, email, hashedPassword], (err, results) => {
                 if (err) {
                     console.error('Error creating user: ', err);
                     return res.status(500).json({ error: 'Error creating user' });
@@ -502,6 +529,15 @@ app.get('/admin/admins', authenticateAdmin, (req, res) => {
         
         res.json({ admins: results });
     });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    if (app.locals.db) {
+        res.json({ status: 'OK', database: 'Connected' });
+    } else {
+        res.status(503).json({ status: 'Error', database: 'Disconnected' });
+    }
 });
 
 // Start server

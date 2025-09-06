@@ -274,19 +274,19 @@
                         
                         <form id="loginFormElement">
                             <div class="form-group">
-                                <input type="email" class="form-control" id="loginEmail" placeholder=" " required>
+                                <input type="email" class="form-control" id="loginEmail" placeholder=" ">
                                 <label for="loginEmail">Email Address</label>
                             </div>
                             
                             <div class="form-group">
-                                <input type="password" class="form-control" id="loginPassword" placeholder=" " required>
+                                <input type="password" class="form-control" id="loginPassword" placeholder=" ">
                                 <label for="loginPassword">Password</label>
                                 <i class="fas fa-eye password-toggle" id="loginPasswordToggle"></i>
                             </div>
                             
                             <!-- Admin PIN Field for Login -->
                             <div class="form-group admin-pin-field" id="loginPinField">
-                                <input type="password" class="form-control" id="loginPin" placeholder=" " required>
+                                <input type="password" class="form-control" id="loginPin" placeholder=" ">
                                 <label for="loginPin">Admin PIN</label>
                             </div>
                             
@@ -321,42 +321,42 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="firstName" placeholder=" " required>
+                                        <input type="text" class="form-control" id="firstName" placeholder=" ">
                                         <label for="firstName">First Name</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="lastName" placeholder=" " required>
+                                        <input type="text" class="form-control" id="lastName" placeholder=" ">
                                         <label for="lastName">Last Name</label>
                                     </div>
                                 </div>
                             </div>
                             
                             <div class="form-group">
-                                <input type="email" class="form-control" id="registerEmail" placeholder=" " required>
+                                <input type="email" class="form-control" id="registerEmail" placeholder=" ">
                                 <label for="registerEmail">Email Address</label>
                             </div>
                             
                             <div class="form-group">
-                                <input type="password" class="form-control" id="registerPassword" placeholder=" " required minlength="6">
+                                <input type="password" class="form-control" id="registerPassword" placeholder=" " minlength="6">
                                 <label for="registerPassword">Password (min. 6 characters)</label>
                                 <i class="fas fa-eye password-toggle" id="registerPasswordToggle"></i>
                             </div>
                             
                             <div class="form-group">
-                                <input type="password" class="form-control" id="confirmPassword" placeholder=" " required>
+                                <input type="password" class="form-control" id="confirmPassword" placeholder=" ">
                                 <label for="confirmPassword">Confirm Password</label>
                             </div>
                             
                             <!-- Admin PIN Field for Registration -->
                             <div class="form-group admin-pin-field" id="registerPinField">
-                                <input type="password" class="form-control" id="registerPin" placeholder=" " required>
+                                <input type="password" class="form-control" id="registerPin" placeholder=" ">
                                 <label for="registerPin">Admin PIN</label>
                             </div>
                             
                             <div class="form-group form-check mb-3">
-                                <input type="checkbox" class="form-check-input" id="termsAgree" required>
+                                <input type="checkbox" class="form-check-input" id="termsAgree">
                                 <label class="form-check-label" for="termsAgree">I agree to the <a href="#" class="text-decoration-none">Terms and Conditions</a></label>
                             </div>
                             
@@ -377,7 +377,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -650,16 +649,14 @@
     async function testBackendConnection() {
         try {
             addDebugInfo('Testing connection to backend...');
-            const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: 'test@test.com', password: 'test' })
-            });
+            const response = await fetch(`${API_BASE_URL}/health`);
             
-            // We don't care about the response content, just if we can connect
-            addDebugInfo(`Backend connection: ${response.status} ${response.statusText}`);
+            if (response.ok) {
+                const data = await response.json();
+                addDebugInfo(`Backend connection: ${data.status}, Database: ${data.database}`);
+            } else {
+                addDebugInfo('Backend connection failed');
+            }
         } catch (error) {
             addDebugInfo(`Backend connection failed: ${error.message}`);
             addDebugInfo('Make sure your backend server is running on port 5000');
