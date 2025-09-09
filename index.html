@@ -18,327 +18,335 @@
             /* Your existing CSS remains the same, just adding fixes for the slideshow */
 
             /**/
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-        }
-        
-        /* Enhanced Welcome Section */
-        .welcome-section {
-            min-height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            padding: 40px 20px;
-            border-radius: 20px;
-            background: rgba(26, 26, 46, 0.4);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-        
-        .welcome-content {
-            display: flex;
-            align-items: center;
-            gap: 50px;
-            position: relative;
-            z-index: 4;
-            width: 100%;
-            padding: 40px;
-            background: rgba(15, 15, 19, 0.5);
-            border-radius: 20px;
-            border: 1px solid rgba(138, 43, 226, 0.2);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .logo-container {
-            flex: 0 0 40%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .logo-image {
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            border-radius: 25px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-            animation: fadeInLeft 1s ease-out;
-            border: 2px solid white;
-        }
-        
-        .text-content {
-            flex: 0 0 60%;
-            text-align: left;
-        }
-        
-        .main-title {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-            background: linear-gradient(to right, var(--green), var(--skyblue), var(--purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            animation: fadeInDown 1s ease-out;
-        }
-        
-        .subtitle {
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-            opacity: 0.9;
-            animation: fadeInUp 1s ease-out 0.3s both;
-            color: var(--light-color);
-            font-weight: 400;
-        }
-        
-        .tagline {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
-            line-height: 1.6;
-            animation: fadeIn 1.5s ease-out 0.6s both;
-            color: rgba(255, 255, 255, 0.85);
-        }
-        
-        .stats {
-            display: flex;
-            gap: 30px;
-            animation: fadeIn 1s ease-out 1.2s both;
-        }
-        
-        .stat-item {
-            text-align: center;
-        }
-        
-        .stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            background: linear-gradient(to right, var(--yellow), var(--green));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-            text-shadow: 0.5px 0.5px 35px white;
-        }
-        
-        .stat-label {
-            font-size: 1rem;
-            opacity: 0.8;
-            color: var(--light-color);
-        }
-        
-        /* Animated background elements */
-        .welcome-shape {
-            position: absolute;
-            z-index: 1;
-            border-radius: 50%;
-            opacity: 0.5;
-            filter: blur(40px);
-        }
-        
-        .shape-1 {
-            top: 10%;
-            left: 5%;
-            width: 250px;
-            height: 250px;
-            background: var(--purple);
-            animation: float 15s ease-in-out infinite;
-        }
-        
-        .shape-2 {
-            bottom: 10%;
-            right: 5%;
-            width: 200px;
-            height: 200px;
-            background: var(--skyblue);
-            animation: float 18s ease-in-out infinite reverse;
-        }
-        
-        .shape-3 {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 180px;
-            height: 180px;
-            background: var(--green);
-            animation: pulse 10s ease-in-out infinite;
-        }
-        
-        .floating-icon {
-            position: absolute;
-            font-size: 2rem;
-            opacity: 0.7;
-            z-index: 2;
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        .icon-1 {
-            top: 20%;
-            right: 15%;
-            color: var(--yellow);
-            animation-delay: 1s;
-        }
-        
-        .icon-2 {
-            bottom: 30%;
-            left: 15%;
-            color: var(--skyblue);
-            animation-delay: 2s;
-        }
-        
-        .icon-3 {
-            top: 40%;
-            right: 25%;
-            color: var(--green);
-            animation-delay: 3s;
-        }
-        
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
+            .container {
+                max-width: 100%;
+                margin: 0 auto;
             }
-            to {
-                opacity: 1;
-            }
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes fadeInLeft {
-            from {
-                opacity: 0;
-                transform: translateX(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-20px) rotate(10deg);
-            }
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.3;
-            }
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-                opacity: 0.5;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.3;
-            }
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 992px) {
-            .welcome-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 30px;
-            }
-            
-            .text-content {
-                text-align: center;
-            }
-            
-            .main-title {
-                font-size: 3rem;
-            }
-            
-            .subtitle {
-                font-size: 1.5rem;
-            }
-            
-            .stats {
+
+            /* Enhanced Welcome Section */
+            .welcome-section {
+                min-height: 60vh;
+                display: flex;
+                align-items: center;
                 justify-content: center;
+                position: relative;
+                overflow: hidden;
+                padding: 40px 20px;
+                border-radius: 20px;
+                background: rgba(26, 26, 46, 0.4);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             }
-        }
-        
-        @media (max-width: 768px) {
-            .main-title {
-                font-size: 2.5rem;
-            }
-            
-            .subtitle {
-                font-size: 1.3rem;
-            }
-            
-            .tagline {
-                font-size: 1rem;
-            }
-            
-            .stats {
-                flex-wrap: wrap;
-                gap: 20px;
-            }
-            
-            .stat-item {
-                flex: 0 0 calc(50% - 20px);
-            }
-            
+
             .welcome-content {
-                padding: 30px 20px;
+                display: flex;
+                align-items: center;
+                gap: 50px;
+                position: relative;
+                z-index: 4;
+                width: 100%;
+                padding: 40px;
+                background: rgba(15, 15, 19, 0.5);
+                border-radius: 20px;
+                border: 1px solid rgba(138, 43, 226, 0.2);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             }
-            
-            .stat-number {
-                font-size: 2rem;
+
+            .logo-container {
+                flex: 0 0 40%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
-        }
-        
-        @media (max-width: 576px) {
+
+            .logo-image {
+                width: 100%;
+                max-width: 300px;
+                height: auto;
+                border-radius: 25px;
+                box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+                animation: fadeInLeft 1s ease-out;
+                border: 2px solid white;
+            }
+
+            .text-content {
+                flex: 0 0 60%;
+                text-align: left;
+            }
+
             .main-title {
-                font-size: 2rem;
+                font-size: 3.5rem;
+                margin-bottom: 15px;
+                background: linear-gradient(to right, var(--green), var(--skyblue), var(--purple));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+                animation: fadeInDown 1s ease-out;
             }
-            
+
             .subtitle {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+                opacity: 0.9;
+                animation: fadeInUp 1s ease-out 0.3s both;
+                color: var(--light-color);
+                font-weight: 400;
+            }
+
+            .tagline {
                 font-size: 1.1rem;
+                margin-bottom: 30px;
+                line-height: 1.6;
+                animation: fadeIn 1.5s ease-out 0.6s both;
+                color: rgba(255, 255, 255, 0.85);
             }
-            
+
+            .stats {
+                display: flex;
+                gap: 30px;
+                animation: fadeIn 1s ease-out 1.2s both;
+            }
+
             .stat-item {
-                flex: 0 0 100%;
+                text-align: center;
             }
-            
+
+            .stat-number {
+                font-size: 2.5rem;
+                font-weight: 700;
+                background: linear-gradient(to right, var(--yellow), var(--green));
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                margin-bottom: 5px;
+                text-shadow: 0.5px 0.5px 35px white;
+            }
+
+            .stat-label {
+                font-size: 1rem;
+                opacity: 0.8;
+                color: var(--light-color);
+            }
+
+            /* Animated background elements */
             .welcome-shape {
-                display: none;
+                position: absolute;
+                z-index: 1;
+                border-radius: 50%;
+                opacity: 0.5;
+                filter: blur(40px);
             }
-            
+
+            .shape-1 {
+                top: 10%;
+                left: 5%;
+                width: 250px;
+                height: 250px;
+                background: var(--purple);
+                animation: float 15s ease-in-out infinite;
+            }
+
+            .shape-2 {
+                bottom: 10%;
+                right: 5%;
+                width: 200px;
+                height: 200px;
+                background: var(--skyblue);
+                animation: float 18s ease-in-out infinite reverse;
+            }
+
+            .shape-3 {
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 180px;
+                height: 180px;
+                background: var(--green);
+                animation: pulse 10s ease-in-out infinite;
+            }
+
             .floating-icon {
-                display: none;
+                position: absolute;
+                font-size: 2rem;
+                opacity: 0.7;
+                z-index: 2;
+                animation: float 6s ease-in-out infinite;
             }
-        }
+
+            .icon-1 {
+                top: 20%;
+                right: 15%;
+                color: var(--yellow);
+                animation-delay: 1s;
+            }
+
+            .icon-2 {
+                bottom: 30%;
+                left: 15%;
+                color: var(--skyblue);
+                animation-delay: 2s;
+            }
+
+            .icon-3 {
+                top: 40%;
+                right: 25%;
+                color: var(--green);
+                animation-delay: 3s;
+            }
+
+            /* Animations */
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeInDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeInLeft {
+                from {
+                    opacity: 0;
+                    transform: translateX(-30px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes float {
+                0% {
+                    transform: translateY(0) rotate(0deg);
+                }
+
+                50% {
+                    transform: translateY(-20px) rotate(10deg);
+                }
+
+                100% {
+                    transform: translateY(0) rotate(0deg);
+                }
+            }
+
+            @keyframes pulse {
+                0% {
+                    transform: translate(-50%, -50%) scale(1);
+                    opacity: 0.3;
+                }
+
+                50% {
+                    transform: translate(-50%, -50%) scale(1.2);
+                    opacity: 0.5;
+                }
+
+                100% {
+                    transform: translate(-50%, -50%) scale(1);
+                    opacity: 0.3;
+                }
+            }
+
+            /* Responsive Design */
+            @media (max-width: 992px) {
+                .welcome-content {
+                    flex-direction: column;
+                    text-align: center;
+                    gap: 30px;
+                }
+
+                .text-content {
+                    text-align: center;
+                }
+
+                .main-title {
+                    font-size: 3rem;
+                }
+
+                .subtitle {
+                    font-size: 1.5rem;
+                }
+
+                .stats {
+                    justify-content: center;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .main-title {
+                    font-size: 2.5rem;
+                }
+
+                .subtitle {
+                    font-size: 1.3rem;
+                }
+
+                .tagline {
+                    font-size: 1rem;
+                }
+
+                .stats {
+                    flex-wrap: wrap;
+                    gap: 20px;
+                }
+
+                .stat-item {
+                    flex: 0 0 calc(50% - 20px);
+                }
+
+                .welcome-content {
+                    padding: 30px 20px;
+                }
+
+                .stat-number {
+                    font-size: 2rem;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .main-title {
+                    font-size: 2rem;
+                }
+
+                .subtitle {
+                    font-size: 1.1rem;
+                }
+
+                .stat-item {
+                    flex: 0 0 100%;
+                }
+
+                .welcome-shape {
+                    display: none;
+                }
+
+                .floating-icon {
+                    display: none;
+                }
+            }
 
             /* University Slideshow - Fixed Styles */
             .university-slideshow {
@@ -1350,52 +1358,53 @@
 
     <body>
         <!-- Main Containor -->
-       <div class="container">
-        <section class="welcome-section">
-            <!-- Animated background elements -->
-            <div class="welcome-shape shape-1"></div>
-            <div class="welcome-shape shape-2"></div>
-            <div class="welcome-shape shape-3"></div>
-            
-            <!-- Floating icons -->
-            <div class="floating-icon icon-1">
-                <i class="fas fa-graduation-cap"></i>
-            </div>
-            <div class="floating-icon icon-2">
-                <i class="fas fa-book-open"></i>
-            </div>
-            <div class="floating-icon icon-3">
-                <i class="fas fa-degree-cap"></i>
-            </div>
-            
-            <div class="welcome-content">
-                <div class="logo-container">
-                    <img src="images/Uni-logo.png" alt="University Selector Logo" class="logo-image">
+        <div class="container">
+            <section class="welcome-section">
+                <!-- Animated background elements -->
+                <div class="welcome-shape shape-1"></div>
+                <div class="welcome-shape shape-2"></div>
+                <div class="welcome-shape shape-3"></div>
+
+                <!-- Floating icons -->
+                <div class="floating-icon icon-1">
+                    <i class="fas fa-graduation-cap"></i>
                 </div>
-                
-                <div class="text-content">
-                    <h1 class="main-title">Welcome to UniSelector</h1>
-                    <p class="subtitle">Discover Your Perfect Academic Journey</p>
-                    <p class="tagline">Find the ideal university that matches your aspirations, skills, and dreams with our intelligent matching platform.</p>
-                    
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="stat-number">100</div>
-                            <div class="stat-label">Universities</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">50+</div>
-                            <div class="stat-label">Students Helped</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">95%</div>
-                            <div class="stat-label">Success Rate</div>
+                <div class="floating-icon icon-2">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <div class="floating-icon icon-3">
+                    <i class="fas fa-degree-cap"></i>
+                </div>
+
+                <div class="welcome-content">
+                    <div class="logo-container">
+                        <img src="images/Uni-logo.png" alt="University Selector Logo" class="logo-image">
+                    </div>
+
+                    <div class="text-content">
+                        <h1 class="main-title">Welcome to UniSelector</h1>
+                        <p class="subtitle">Discover Your Perfect Academic Journey</p>
+                        <p class="tagline">Find the ideal university that matches your aspirations, skills, and dreams
+                            with our intelligent matching platform.</p>
+
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-number">100</div>
+                                <div class="stat-label">Universities</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">50+</div>
+                                <div class="stat-label">Students Helped</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">95%</div>
+                                <div class="stat-label">Success Rate</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
-    </div>
+            </section>
+        </div>
 
         <!-- University Slideshow -->
         <section class="university-slideshow">

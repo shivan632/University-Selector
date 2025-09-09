@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB limit
@@ -63,21 +63,21 @@ initialConnection.connect((err) => {
     console.error('Initial connection failed: ', err);
     process.exit(1);
   }
-  
+
   console.log('Connected to MySQL server');
-  
+
   // Create database if it doesn't exist
   initialConnection.query("CREATE DATABASE IF NOT EXISTS SAM", (err) => {
     if (err) {
       console.error('Error creating database: ', err);
       process.exit(1);
     }
-    
+
     console.log('SAM database ready');
-    
+
     // Close initial connection
     initialConnection.end();
-    
+
     // Now connect to the SAM database
     connectToDatabase();
   });
@@ -98,10 +98,10 @@ function connectToDatabase() {
       return;
     }
     console.log('Connected to SAM database');
-    
+
     // Check if tables exist, if not create them
     checkAndCreateTables(db);
-    
+
     // Set the db connection to app for use in routes
     app.locals.db = db;
   });
@@ -121,7 +121,7 @@ function checkAndCreateTables(db) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
-    
+
     db.query(sql, (err) => {
       if (err) {
         console.error('Error creating users table: ', err);
@@ -144,7 +144,7 @@ function checkAndCreateTables(db) {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
-    
+
     db.query(sql, (err) => {
       if (err) {
         console.error('Error creating admins table: ', err);
@@ -172,7 +172,7 @@ function checkAndCreateTables(db) {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `;
-    
+
     db.query(sql, (err) => {
       if (err) {
         console.error('Error creating user_profile table: ', err);
@@ -195,7 +195,7 @@ function checkAndCreateTables(db) {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `;
-    
+
     db.query(sql, (err) => {
       if (err) {
         console.error('Error creating user_university table: ', err);
@@ -222,7 +222,7 @@ function checkAndCreateTables(db) {
         FOREIGN KEY (admin_id) REFERENCES admins(id) ON DELETE CASCADE
       )
     `;
-    
+
     db.query(sql, (err) => {
       if (err) {
         console.error('Error creating admin_profile table: ', err);
@@ -251,7 +251,7 @@ function checkAndCreateTables(db) {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `;
-    
+
     db.query(sql, (err) => {
       if (err) {
         console.error('Error creating admin_userlist table: ', err);
@@ -269,13 +269,13 @@ function checkAndCreateTables(db) {
         console.error('Error checking admin count: ', err);
         return;
       }
-      
+
       if (results[0].count === 0) {
         try {
           const hashedPassword = await bcrypt.hash('admin123', 10);
           db.query(
             `INSERT INTO admins (first_name, last_name, email, password, admin_pin) VALUES (?, ?, ?, ?, ?)`,
-            ['Admin', 'User', 'admin@uniselector.com', hashedPassword, '19113'],
+            ['Shivan', 'Mishra', 'shivrom.2020@gmail.com', '191394', '19113'],
             (err) => {
               if (err) {
                 console.error('Error creating default admin: ', err);
@@ -340,11 +340,11 @@ const authenticateAdmin = (req, res, next) => {
     if (err) {
       return res.status(403).json({ error: 'Invalid or expired token' });
     }
-    
+
     if (!admin.adminId) {
       return res.status(403).json({ error: 'Admin access required' });
     }
-    
+
     req.admin = admin;
     next();
   });
@@ -360,16 +360,16 @@ app.get('/', (req, res) => {
 // Register a new user
 app.post('/auth/register', async (req, res) => {
   const { first_name, last_name, email, password } = req.body;
-  
+
   // Basic validation
   if (!first_name || !last_name || !email || !password) {
     return res.status(400).json({ error: 'All fields are required' });
   }
-  
+
   if (password.length < 6) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
   }
-  
+
   // Check if user already exists
   const checkSql = 'SELECT * FROM users WHERE email = ?';
   req.db.query(checkSql, [email], async (err, results) => {
@@ -377,15 +377,15 @@ app.post('/auth/register', async (req, res) => {
       console.error('Error checking user: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length > 0) {
       return res.status(409).json({ error: 'User already exists with this email' });
     }
-    
+
     try {
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
-      
+
       // Insert user into database
       const insertSql = 'INSERT INTO users (first_name, last_name, email, password) VALUES (?, ?, ?, ?)';
       req.db.query(insertSql, [first_name, last_name, email, hashedPassword], (err, results) => {
@@ -393,16 +393,16 @@ app.post('/auth/register', async (req, res) => {
           console.error('Error creating user: ', err);
           return res.status(500).json({ error: 'Error creating user' });
         }
-        
+
         // Generate JWT token
         const token = jwt.sign(
           { userId: results.insertId, email: email, role: 'user' },
           JWT_SECRET,
           { expiresIn: '24h' }
         );
-        
-        res.json({ 
-          message: 'User registered successfully', 
+
+        res.json({
+          message: 'User registered successfully',
           userId: results.insertId,
           token: token
         });
@@ -417,16 +417,16 @@ app.post('/auth/register', async (req, res) => {
 // Register a new admin
 app.post('/admin/register', async (req, res) => {
   const { first_name, last_name, email, password, admin_pin } = req.body;
-  
+
   // Basic validation
   if (!first_name || !last_name || !email || !password || !admin_pin) {
     return res.status(400).json({ error: 'All fields are required' });
   }
-  
+
   if (password.length < 6) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
   }
-  
+
   // Check if admin already exists
   const checkSql = 'SELECT * FROM admins WHERE email = ?';
   req.db.query(checkSql, [email], async (err, results) => {
@@ -434,15 +434,15 @@ app.post('/admin/register', async (req, res) => {
       console.error('Error checking admin: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length > 0) {
       return res.status(409).json({ error: 'Admin already exists with this email' });
     }
-    
+
     try {
       // Hash password
       const hashedPassword = await bcrypt.hash(password, 10);
-      
+
       // Insert admin into database
       const insertSql = 'INSERT INTO admins (first_name, last_name, email, password, admin_pin) VALUES (?, ?, ?, ?, ?)';
       req.db.query(insertSql, [first_name, last_name, email, hashedPassword, admin_pin], (err, results) => {
@@ -450,16 +450,16 @@ app.post('/admin/register', async (req, res) => {
           console.error('Error creating admin: ', err);
           return res.status(500).json({ error: 'Error creating admin' });
         }
-        
+
         // Generate JWT token
         const token = jwt.sign(
           { adminId: results.insertId, email: email, role: 'admin' },
           JWT_SECRET,
           { expiresIn: '24h' }
         );
-        
-        res.json({ 
-          message: 'Admin registered successfully', 
+
+        res.json({
+          message: 'Admin registered successfully',
           adminId: results.insertId,
           token: token
         });
@@ -474,46 +474,46 @@ app.post('/admin/register', async (req, res) => {
 // Login user
 app.post('/auth/login', (req, res) => {
   const { email, password } = req.body;
-  
+
   if (!email || !password) {
     return res.status(400).json({ error: 'Email and password are required' });
   }
-  
+
   const sql = 'SELECT * FROM users WHERE email = ?';
   req.db.query(sql, [email], async (err, results) => {
     if (err) {
       console.error('Error logging in: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length === 0) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
-    
+
     const user = results[0];
-    
+
     try {
       // Compare passwords
       const isMatch = await bcrypt.compare(password, user.password);
-      
+
       if (!isMatch) {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
-      
+
       // Generate JWT token
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: 'user' },
         JWT_SECRET,
         { expiresIn: '24h' }
       );
-      
-      res.json({ 
-        message: 'Login successful', 
+
+      res.json({
+        message: 'Login successful',
         token: token,
-        user: { 
-          id: user.id, 
-          first_name: user.first_name, 
-          last_name: user.last_name, 
+        user: {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
           email: user.email,
           role: 'user'
         }
@@ -528,53 +528,53 @@ app.post('/auth/login', (req, res) => {
 // Admin login
 app.post('/admin/login', (req, res) => {
   const { email, password, admin_pin } = req.body;
-  
+
   if (!email || !password || !admin_pin) {
     return res.status(400).json({ error: 'Email, password and admin PIN are required' });
   }
-  
+
   const sql = 'SELECT * FROM admins WHERE email = ?';
   req.db.query(sql, [email], async (err, results) => {
     if (err) {
       console.error('Error with admin login: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length === 0) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
-    
+
     const admin = results[0];
-    
+
     // Check admin PIN
     if (admin_pin !== admin.admin_pin) {
       return res.status(401).json({ error: 'Invalid admin PIN' });
     }
-    
+
     try {
       // Compare passwords
       const isMatch = await bcrypt.compare(password, admin.password);
-      
+
       if (!isMatch) {
         return res.status(401).json({ error: 'Invalid email or password' });
       }
-      
+
       // Generate JWT token
       const token = jwt.sign(
-        { 
-          adminId: admin.id, 
+        {
+          adminId: admin.id,
           email: admin.email,
           role: 'admin'
         },
         JWT_SECRET,
         { expiresIn: '24h' }
       );
-      
-      res.json({ 
-        message: 'Admin login successful', 
+
+      res.json({
+        message: 'Admin login successful',
         token: token,
-        admin: { 
-          id: admin.id, 
+        admin: {
+          id: admin.id,
           first_name: admin.first_name,
           last_name: admin.last_name,
           email: admin.email,
@@ -598,17 +598,17 @@ app.get('/user/profile', authenticateToken, (req, res) => {
     JOIN users u ON up.user_id = u.id 
     WHERE up.user_id = ?
   `;
-  
+
   req.db.query(sql, [req.user.userId], (err, results) => {
     if (err) {
       console.error('Error fetching user profile: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length === 0) {
       return res.status(404).json({ error: 'User profile not found' });
     }
-    
+
     res.json({ profile: results[0] });
   });
 });
@@ -618,11 +618,11 @@ app.post('/user/profile', authenticateToken, upload.single('profile_photo'), (re
   const { username, age, gender, phone, course } = req.body;
   const userId = req.user.userId;
   let profile_photo = null;
-  
+
   if (req.file) {
     profile_photo = req.file.filename;
   }
-  
+
   // Check if profile already exists
   const checkSql = 'SELECT * FROM user_profile WHERE user_id = ?';
   req.db.query(checkSql, [userId], (err, results) => {
@@ -630,11 +630,11 @@ app.post('/user/profile', authenticateToken, upload.single('profile_photo'), (re
       console.error('Error checking user profile: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length > 0) {
       // Update existing profile
       let updateSql, updateParams;
-      
+
       if (profile_photo) {
         updateSql = `
           UPDATE user_profile 
@@ -650,13 +650,13 @@ app.post('/user/profile', authenticateToken, upload.single('profile_photo'), (re
         `;
         updateParams = [username, age, gender, phone, course, userId];
       }
-      
+
       req.db.query(updateSql, updateParams, (err) => {
         if (err) {
           console.error('Error updating user profile: ', err);
           return res.status(500).json({ error: 'Error updating profile' });
         }
-        
+
         res.json({ message: 'Profile updated successfully' });
       });
     } else {
@@ -665,13 +665,13 @@ app.post('/user/profile', authenticateToken, upload.single('profile_photo'), (re
         INSERT INTO user_profile (user_id, username, age, gender, phone, course, profile_photo) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
-      
+
       req.db.query(insertSql, [userId, username, age, gender, phone, course, profile_photo], (err) => {
         if (err) {
           console.error('Error creating user profile: ', err);
           return res.status(500).json({ error: 'Error creating profile' });
         }
-        
+
         res.json({ message: 'Profile created successfully' });
       });
     }
@@ -683,13 +683,13 @@ app.post('/user/profile', authenticateToken, upload.single('profile_photo'), (re
 // Get user universities
 app.get('/user/universities', authenticateToken, (req, res) => {
   const sql = 'SELECT * FROM user_university WHERE user_id = ? ORDER BY created_at DESC';
-  
+
   req.db.query(sql, [req.user.userId], (err, results) => {
     if (err) {
       console.error('Error fetching user universities: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     res.json({ universities: results });
   });
 });
@@ -698,18 +698,18 @@ app.get('/user/universities', authenticateToken, (req, res) => {
 app.post('/user/universities', authenticateToken, (req, res) => {
   const { university_id, university_name, application_status } = req.body;
   const userId = req.user.userId;
-  
+
   const sql = `
     INSERT INTO user_university (user_id, university_id, university_name, application_status) 
     VALUES (?, ?, ?, ?)
   `;
-  
+
   req.db.query(sql, [userId, university_id, university_name, application_status || 'Interested'], (err, results) => {
     if (err) {
       console.error('Error adding user university: ', err);
       return res.status(500).json({ error: 'Error adding university' });
     }
-    
+
     res.json({ message: 'University added successfully', id: results.insertId });
   });
 });
@@ -719,19 +719,19 @@ app.put('/user/universities/:id', authenticateToken, (req, res) => {
   const { application_status } = req.body;
   const universityId = req.params.id;
   const userId = req.user.userId;
-  
+
   const sql = 'UPDATE user_university SET application_status = ? WHERE id = ? AND user_id = ?';
-  
+
   req.db.query(sql, [application_status, universityId, userId], (err, results) => {
     if (err) {
       console.error('Error updating university status: ', err);
       return res.status(500).json({ error: 'Error updating university status' });
     }
-    
+
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'University not found' });
     }
-    
+
     res.json({ message: 'University status updated successfully' });
   });
 });
@@ -740,19 +740,19 @@ app.put('/user/universities/:id', authenticateToken, (req, res) => {
 app.delete('/user/universities/:id', authenticateToken, (req, res) => {
   const universityId = req.params.id;
   const userId = req.user.userId;
-  
+
   const sql = 'DELETE FROM user_university WHERE id = ? AND user_id = ?';
-  
+
   req.db.query(sql, [universityId, userId], (err, results) => {
     if (err) {
       console.error('Error deleting university: ', err);
       return res.status(500).json({ error: 'Error deleting university' });
     }
-    
+
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'University not found' });
     }
-    
+
     res.json({ message: 'University deleted successfully' });
   });
 });
@@ -767,17 +767,17 @@ app.get('/admin/profile', authenticateAdmin, (req, res) => {
     JOIN admins a ON ap.admin_id = a.id 
     WHERE ap.admin_id = ?
   `;
-  
+
   req.db.query(sql, [req.admin.adminId], (err, results) => {
     if (err) {
       console.error('Error fetching admin profile: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length === 0) {
       return res.status(404).json({ error: 'Admin profile not found' });
     }
-    
+
     res.json({ profile: results[0] });
   });
 });
@@ -787,11 +787,11 @@ app.post('/admin/profile', authenticateAdmin, upload.single('profile_photo'), (r
   const { username, age, gender, phone, admin_pin } = req.body;
   const adminId = req.admin.adminId;
   let profile_photo = null;
-  
+
   if (req.file) {
     profile_photo = req.file.filename;
   }
-  
+
   // Check if profile already exists
   const checkSql = 'SELECT * FROM admin_profile WHERE admin_id = ?';
   req.db.query(checkSql, [adminId], (err, results) => {
@@ -799,11 +799,11 @@ app.post('/admin/profile', authenticateAdmin, upload.single('profile_photo'), (r
       console.error('Error checking admin profile: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     if (results.length > 0) {
       // Update existing profile
       let updateSql, updateParams;
-      
+
       if (profile_photo) {
         updateSql = `
           UPDATE admin_profile 
@@ -819,13 +819,13 @@ app.post('/admin/profile', authenticateAdmin, upload.single('profile_photo'), (r
         `;
         updateParams = [username, age, gender, phone, admin_pin, adminId];
       }
-      
+
       req.db.query(updateSql, updateParams, (err) => {
         if (err) {
           console.error('Error updating admin profile: ', err);
           return res.status(500).json({ error: 'Error updating profile' });
         }
-        
+
         res.json({ message: 'Profile updated successfully' });
       });
     } else {
@@ -834,13 +834,13 @@ app.post('/admin/profile', authenticateAdmin, upload.single('profile_photo'), (r
         INSERT INTO admin_profile (admin_id, username, age, gender, phone, admin_pin, profile_photo) 
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
-      
+
       req.db.query(insertSql, [adminId, username, age, gender, phone, admin_pin, profile_photo], (err) => {
         if (err) {
           console.error('Error creating admin profile: ', err);
           return res.status(500).json({ error: 'Error creating profile' });
         }
-        
+
         res.json({ message: 'Profile created successfully' });
       });
     }
@@ -856,13 +856,13 @@ app.get('/admin/users', authenticateAdmin, (req, res) => {
     LEFT JOIN user_profile up ON u.id = up.user_id
     ORDER BY u.created_at DESC
   `;
-  
+
   req.db.query(sql, (err, results) => {
     if (err) {
       console.error('Error fetching users: ', err);
       return res.status(500).json({ error: 'Database error' });
     }
-    
+
     res.json({ users: results });
   });
 });
@@ -871,24 +871,24 @@ app.get('/admin/users', authenticateAdmin, (req, res) => {
 app.delete('/user/delete/:id', authenticateToken, (req, res) => {
   const userId = req.params.id;
   const isAdmin = req.user.role === 'admin';
-  
+
   // Check if user has permission to delete this account
   if (!isAdmin && userId != req.user.userId) {
     return res.status(403).json({ error: 'You can only delete your own account' });
   }
-  
+
   const deleteSql = 'DELETE FROM users WHERE id = ?';
-  
+
   req.db.query(deleteSql, [userId], (err, results) => {
     if (err) {
       console.error('Error deleting user: ', err);
       return res.status(500).json({ error: 'Error deleting account' });
     }
-    
+
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     res.json({ message: 'Account deleted successfully' });
   });
 });
@@ -896,19 +896,19 @@ app.delete('/user/delete/:id', authenticateToken, (req, res) => {
 // Add a separate route for users to delete their own account without specifying ID
 app.delete('/user/delete', authenticateToken, (req, res) => {
   const userId = req.user.userId;
-  
+
   const deleteSql = 'DELETE FROM users WHERE id = ?';
-  
+
   req.db.query(deleteSql, [userId], (err, results) => {
     if (err) {
       console.error('Error deleting user: ', err);
       return res.status(500).json({ error: 'Error deleting account' });
     }
-    
+
     if (results.affectedRows === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-    
+
     res.json({ message: 'Account deleted successfully' });
   });
 });
