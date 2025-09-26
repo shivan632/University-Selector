@@ -275,7 +275,7 @@ function checkAndCreateTables(db) {
           const hashedPassword = await bcrypt.hash('admin123', 10);
           db.query(
             `INSERT INTO admins (first_name, last_name, email, password, admin_pin) VALUES (?, ?, ?, ?, ?)`,
-            ['Shivan', 'Mishra', 'shivrom.2020@gmail.com', '191394', '19113'],
+            ['Raja', 'Mishra', 'raja@gmail.com', '191394', '19113'],
             (err) => {
               if (err) {
                 console.error('Error creating default admin: ', err);
@@ -891,6 +891,63 @@ app.delete('/user/delete/:id', authenticateToken, (req, res) => {
 
     res.json({ message: 'Account deleted successfully' });
   });
+});
+
+// Get user universities for admin view
+app.get('/admin/user-universities/:userId', authenticateAdmin, (req, res) => {
+    const userId = req.params.userId;
+    
+    const sql = 'SELECT * FROM user_university WHERE user_id = ? ORDER BY created_at DESC';
+    
+    req.db.query(sql, [userId], (err, results) => {
+        if (err) {
+            console.error('Error fetching user universities: ', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        
+        res.json({ universities: results });
+    });
+});
+
+// Get all applications for admin dashboard
+app.get('/admin/all-applications', authenticateAdmin, (req, res) => {
+    const sql = `
+        SELECT uu.*, u.first_name, u.last_name, u.email, up.username, up.age, up.gender, up.course, up.profile_photo
+        FROM user_university uu 
+        JOIN users u ON uu.user_id = u.id 
+        LEFT JOIN user_profile up ON u.id = up.user_id
+        ORDER BY uu.created_at DESC
+    `;
+    
+    req.db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching all applications: ', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        
+        res.json({ applications: results });
+    });
+});
+
+// Update application status
+app.put('/admin/application/:id', authenticateAdmin, (req, res) => {
+    const applicationId = req.params.id;
+    const { application_status } = req.body;
+    
+    const sql = 'UPDATE user_university SET application_status = ? WHERE id = ?';
+    
+    req.db.query(sql, [application_status, applicationId], (err, results) => {
+        if (err) {
+            console.error('Error updating application status: ', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        
+        if (results.affectedRows === 0) {
+            return res.status(404).json({ error: 'Application not found' });
+        }
+        
+        res.json({ message: 'Application status updated successfully' });
+    });
 });
 
 // Add a separate route for users to delete their own account without specifying ID
